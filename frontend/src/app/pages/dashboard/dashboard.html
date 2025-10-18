@@ -1,0 +1,113 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Visão geral da barbearia</p>
+  </div>
+  
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon appointments">
+            <mat-icon>event</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ todayAppointments }}</h3>
+            <p>Marcações Hoje</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon customers">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ totalCustomers }}</h3>
+            <p>Total Clientes</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon revenue">
+            <mat-icon>euro</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>€{{ monthlyRevenue }}</h3>
+            <p>Receita Mensal</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon services">
+            <mat-icon>content_cut</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ activeServices }}</h3>
+            <p>Serviços Ativos</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <!-- Charts Row -->
+  <div class="charts-row">
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Marcações por Semana</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas baseChart
+                [data]="appointmentsChartData"
+                [options]="chartOptions"
+                type="line">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Serviços Mais Populares</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas baseChart
+                [data]="servicesChartData"
+                [options]="chartOptions"
+                type="doughnut">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <!-- Recent Appointments -->
+  <mat-card class="recent-appointments">
+    <mat-card-header>
+      <mat-card-title>Marcações Recentes</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let appointment of recentAppointments">
+          <mat-icon matListItemIcon>event</mat-icon>
+          <div matListItemTitle>{{ appointment.customerName }}</div>
+          <div matListItemLine>{{ appointment.serviceName }} - {{ appointment.time }}</div>
+          <mat-chip [color]="getStatusColor(appointment.status)" selected>
+            {{ appointment.status }}
+          </mat-chip>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>

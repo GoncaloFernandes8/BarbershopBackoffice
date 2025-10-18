@@ -1,0 +1,40 @@
+<mat-sidenav-container class="sidebar-container">
+  <mat-sidenav mode="side" opened class="sidebar">
+    <div class="sidebar-header">
+      <h2>🪒 Barbershop</h2>
+      <p>Backoffice</p>
+    </div>
+    
+    <mat-nav-list class="nav-list">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      
+      <a mat-list-item routerLink="/calendar" routerLinkActive="active">
+        <mat-icon>calendar_today</mat-icon>
+        <span>Calendário</span>
+      </a>
+      
+      <a mat-list-item routerLink="/appointments" routerLinkActive="active">
+        <mat-icon>event</mat-icon>
+        <span>Marcações</span>
+      </a>
+      
+      <a mat-list-item routerLink="/customers" routerLinkActive="active">
+        <mat-icon>people</mat-icon>
+        <span>Clientes</span>
+      </a>
+      
+      <a mat-list-item routerLink="/services" routerLinkActive="active">
+        <mat-icon>content_cut</mat-icon>
+        <span>Serviços</span>
+      </a>
+      
+      <a mat-list-item routerLink="/barbers" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+        <span>Barbeiros</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+</mat-sidenav-container>

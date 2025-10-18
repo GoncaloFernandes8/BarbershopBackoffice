@@ -1,0 +1,66 @@
+<div class="calendar-page">
+  <div class="calendar-header">
+    <h1>Calendário de Marcações</h1>
+    <div class="calendar-controls">
+      <button mat-icon-button (click)="previousMonth()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <h2>{{ currentMonth }}</h2>
+      <button mat-icon-button (click)="nextMonth()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button mat-flat-button color="primary" (click)="goToToday()">
+        Hoje
+      </button>
+    </div>
+  </div>
+  
+  <!-- Calendar Grid -->
+  <mat-card class="calendar-card">
+    <div class="calendar-grid">
+      <!-- Week Days Header -->
+      <div class="week-days">
+        <div class="week-day" *ngFor="let day of weekDays">{{ day }}</div>
+      </div>
+      
+      <!-- Calendar Days -->
+      <div class="calendar-days">
+        <div class="calendar-day" 
+             *ngFor="let day of calendarDays"
+             [class.other-month]="!day.isCurrentMonth"
+             [class.today]="day.isToday"
+             [class.has-appointments]="day.appointments.length > 0"
+             (click)="selectDay(day)">
+          <div class="day-number">{{ day.number }}</div>
+          <div class="appointments-count" *ngIf="day.appointments.length > 0">
+            {{ day.appointments.length }} marcação(ões)
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+  
+  <!-- Day Details -->
+  <mat-card class="day-details" *ngIf="selectedDay">
+    <mat-card-header>
+      <mat-card-title>
+        {{ selectedDay.date | date:'EEEE, d MMMM yyyy' }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="appointments-list">
+        <div class="appointment-item" *ngFor="let appointment of selectedDay.appointments">
+          <div class="appointment-time">{{ appointment.time }}</div>
+          <div class="appointment-details">
+            <div class="customer-name">{{ appointment.customerName }}</div>
+            <div class="service-name">{{ appointment.serviceName }}</div>
+            <div class="barber-name">{{ appointment.barberName }}</div>
+          </div>
+          <mat-chip [color]="getStatusColor(appointment.status)" selected>
+            {{ appointment.status }}
+          </mat-chip>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
