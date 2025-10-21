@@ -1,0 +1,203 @@
+.appointments-page {
+  padding: 0;
+}
+
+.page-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-header h1 {
+  color: #e9eef7;
+  margin-bottom: var(--space-6);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.filters-card {
+  background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
+  border: 1px solid #2a3042;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-6);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.barber-select,
+.date-select {
+  min-width: 200px;
+}
+
+.appointments-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.no-appointments-card {
+  background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
+  border: 1px solid #2a3042;
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.no-appointments-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.no-appointments-icon {
+  background: rgba(195, 255, 90, 0.1);
+  color: #C3FF5A;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(195, 255, 90, 0.2);
+}
+
+.no-appointments-icon mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+.no-appointments-content h3 {
+  color: #e9eef7;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+.no-appointments-content p {
+  color: #cbd4e6;
+  margin: 0;
+}
+
+.appointments-table-card {
+  background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
+  border: 1px solid #2a3042;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.appointments-table-content {
+  width: 100%;
+  background: transparent;
+}
+
+.appointments-table-content th {
+  background: #0f1117;
+  font-weight: var(--font-weight-semibold);
+  color: #e9eef7;
+  padding: var(--space-4) var(--space-3);
+  border-bottom: 1px solid #2a3042;
+}
+
+.appointments-table-content td {
+  padding: var(--space-4) var(--space-3);
+  border-bottom: 1px solid #2a3042;
+  color: #cbd4e6;
+}
+
+.appointments-table-content tr:hover {
+  background: rgba(195, 255, 90, 0.05);
+  border-color: #C3FF5A;
+}
+
+.status-primary {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-accent {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.status-warn {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .appointments-table-card {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointments-page {
+    padding: 0;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+
+  .filters-card {
+    padding: var(--space-4);
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .barber-select,
+  .date-select {
+    min-width: 100%;
+  }
+
+  .appointments-table-card {
+    overflow-x: auto;
+    padding: var(--space-4);
+  }
+
+  .appointments-table-content th,
+  .appointments-table-content td {
+    padding: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .filters-card {
+    padding: var(--space-3);
+  }
+
+  .appointments-table-card {
+    padding: var(--space-3);
+  }
+
+  .appointments-table-content th,
+  .appointments-table-content td {
+    padding: var(--space-1);
+    font-size: var(--font-size-xs);
+  }
+
+  .appointments-table-content {
+    font-size: var(--font-size-xs);
+  }
+}

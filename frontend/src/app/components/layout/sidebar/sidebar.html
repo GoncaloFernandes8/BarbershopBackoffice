@@ -1,40 +1,85 @@
-<mat-sidenav-container class="sidebar-container">
-  <mat-sidenav mode="side" opened class="sidebar">
-    <div class="sidebar-header">
-      <h2>🪒 Barbershop</h2>
-      <p>Backoffice</p>
+<!-- Mobile Overlay -->
+<div class="sidebar-overlay" [class.open]="isOpen" (click)="closeSidebar()"></div>
+
+<!-- Sidebar Container -->
+<nav class="sidebar" [class.open]="isOpen" [class.collapsed]="isCollapsed">
+  <!-- Brand Section -->
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <mat-icon class="brand-icon">content_cut</mat-icon>
     </div>
-    
-    <mat-nav-list class="nav-list">
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
-        <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
-      </a>
+    <div class="brand-text" *ngIf="!isCollapsed">
+      <h1 class="brand-title">Barbershop</h1>
+      <p class="brand-subtitle">Backoffice</p>
+    </div>
+    <button class="collapse-button" (click)="toggleCollapse()" mat-icon-button type="button" [attr.aria-label]="isCollapsed ? 'Expandir sidebar' : 'Colapsar sidebar'">
+      <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+  </div>
+
+  <!-- Navigation Menu -->
+  <div class="sidebar-nav">
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Dashboard' : ''">
+          <mat-icon class="nav-icon">dashboard</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Dashboard</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
       
-      <a mat-list-item routerLink="/calendar" routerLinkActive="active">
-        <mat-icon>calendar_today</mat-icon>
-        <span>Calendário</span>
-      </a>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/calendar" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Calendário' : ''">
+          <mat-icon class="nav-icon">calendar_today</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Calendário</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
       
-      <a mat-list-item routerLink="/appointments" routerLinkActive="active">
-        <mat-icon>event</mat-icon>
-        <span>Marcações</span>
-      </a>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/appointments" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Marcações' : ''">
+          <mat-icon class="nav-icon">event</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Marcações</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
       
-      <a mat-list-item routerLink="/customers" routerLinkActive="active">
-        <mat-icon>people</mat-icon>
-        <span>Clientes</span>
-      </a>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/customers" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Clientes' : ''">
+          <mat-icon class="nav-icon">people</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Clientes</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
       
-      <a mat-list-item routerLink="/services" routerLinkActive="active">
-        <mat-icon>content_cut</mat-icon>
-        <span>Serviços</span>
-      </a>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/services" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Serviços' : ''">
+          <mat-icon class="nav-icon">content_cut</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Serviços</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
       
-      <a mat-list-item routerLink="/barbers" routerLinkActive="active">
-        <mat-icon>person</mat-icon>
-        <span>Barbeiros</span>
-      </a>
-    </mat-nav-list>
-  </mat-sidenav>
-</mat-sidenav-container>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/barbers" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Barbeiros' : ''">
+          <mat-icon class="nav-icon">person</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Barbeiros</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer" *ngIf="!isCollapsed">
+    <div class="user-profile">
+      <div class="user-avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <div class="user-info">
+        <p class="user-name">Admin</p>
+        <p class="user-role">Administrador</p>
+      </div>
+    </div>
+  </div>
+</nav>

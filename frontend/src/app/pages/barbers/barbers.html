@@ -1,1 +1,79 @@
-<p>barbers works!</p>
+<div class="barbers-page">
+  <div class="page-header">
+    <h1>Gestão de Barbeiros</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+      <mat-icon>add</mat-icon>
+      Novo Barbeiro
+    </button>
+  </div>
+
+  <div class="barbers-content">
+    <div class="no-barbers-card" *ngIf="barbers.length === 0">
+      <div class="no-barbers-content">
+        <div class="no-barbers-icon">
+          <mat-icon>person_add</mat-icon>
+        </div>
+        <h3>Nenhum barbeiro cadastrado</h3>
+        <p>Comece adicionando o primeiro barbeiro ao sistema.</p>
+        <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+          <mat-icon>add</mat-icon>
+          Adicionar Barbeiro
+        </button>
+      </div>
+    </div>
+
+    <div class="barbers-table-card" *ngIf="barbers.length > 0">
+      <table mat-table [dataSource]="barbers" class="barbers-table-content">
+        <!-- Nome Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let barber">
+            {{ barber.name }}
+          </td>
+        </ng-container>
+
+        <!-- Ativo Column -->
+        <ng-container matColumnDef="active">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let barber">
+            <mat-chip [class]="barber.active ? 'status-active' : 'status-inactive'">
+              {{ barber.active ? 'Ativo' : 'Inativo' }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Data Criação Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Data de Criação</th>
+          <td mat-cell *matCellDef="let barber">
+            {{ formatDate(barber.createdAt) }}
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let barber">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(barber)">
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="deleteBarber(barber)" 
+                      *ngIf="barber.active">
+                <mat-icon>delete</mat-icon>
+                <span>Desativar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+</div>

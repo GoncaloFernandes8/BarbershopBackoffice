@@ -1,66 +1,107 @@
 <div class="calendar-page">
   <div class="calendar-header">
     <h1>Calendário de Marcações</h1>
+    
     <div class="calendar-controls">
-      <button mat-icon-button (click)="previousMonth()">
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <h2>{{ currentMonth }}</h2>
-      <button mat-icon-button (click)="nextMonth()">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-      <button mat-flat-button color="primary" (click)="goToToday()">
-        Hoje
+      <mat-form-field appearance="outline" class="barber-select">
+        <mat-label>Barbeiro</mat-label>
+        <mat-select [(value)]="selectedBarber" (selectionChange)="onBarberChange()">
+          <mat-option value="">Todos os barbeiros</mat-option>
+          <mat-option *ngFor="let barber of barbers" [value]="barber.id">
+            {{ barber.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="month-navigation">
+        <button mat-icon-button (click)="onPreviousMonth()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <h2>{{ getMonthYear() }}</h2>
+        <button mat-icon-button (click)="onNextMonth()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <button mat-raised-button color="primary" (click)="onCreateAppointment()" [disabled]="!selectedDate" class="new-appointment-button">
+        <mat-icon>add</mat-icon>
+        Nova Marcação
       </button>
     </div>
   </div>
-  
-  <!-- Calendar Grid -->
-  <mat-card class="calendar-card">
+
+  <div class="calendar-container">
     <div class="calendar-grid">
-      <!-- Week Days Header -->
-      <div class="week-days">
-        <div class="week-day" *ngFor="let day of weekDays">{{ day }}</div>
+      <!-- Cabeçalho dos dias da semana -->
+      <div class="weekday-header" *ngFor="let day of weekDays">
+        {{ day }}
       </div>
-      
-      <!-- Calendar Days -->
-      <div class="calendar-days">
-        <div class="calendar-day" 
-             *ngFor="let day of calendarDays"
-             [class.other-month]="!day.isCurrentMonth"
-             [class.today]="day.isToday"
-             [class.has-appointments]="day.appointments.length > 0"
-             (click)="selectDay(day)">
-          <div class="day-number">{{ day.number }}</div>
-          <div class="appointments-count" *ngIf="day.appointments.length > 0">
-            {{ day.appointments.length }} marcação(ões)
+
+      <!-- Dias do calendário -->
+      <div 
+        class="calendar-day" 
+        *ngFor="let day of calendarDays"
+        [class.today]="isToday(day)"
+        [class.selected]="isSelected(day)"
+        [class.other-month]="!isSameMonth(day, currentDate)"
+        [class.has-appointments]="getAppointmentsForDate(day).length > 0"
+        (click)="onDateClick(day)"
+      >
+        <div class="day-number">{{ day.getDate() }}</div>
+        
+        <div class="appointments-list">
+          <div 
+            class="appointment-chip"
+            *ngFor="let appointment of getAppointmentsForDate(day)"
+            [class]="'status-' + getStatusColor(appointment.status)"
+            [title]="appointment.notes || ''"
+          >
+            <span class="time">{{ formatTime(appointment.startsAt) }}</span>
+            <span class="service">{{ getServiceName(appointment.serviceId) }}</span>
           </div>
         </div>
       </div>
     </div>
-  </mat-card>
-  
-  <!-- Day Details -->
-  <mat-card class="day-details" *ngIf="selectedDay">
-    <mat-card-header>
-      <mat-card-title>
-        {{ selectedDay.date | date:'EEEE, d MMMM yyyy' }}
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="appointments-list">
-        <div class="appointment-item" *ngFor="let appointment of selectedDay.appointments">
-          <div class="appointment-time">{{ appointment.time }}</div>
-          <div class="appointment-details">
-            <div class="customer-name">{{ appointment.customerName }}</div>
-            <div class="service-name">{{ appointment.serviceName }}</div>
-            <div class="barber-name">{{ appointment.barberName }}</div>
+  </div>
+
+  <!-- Painel lateral com detalhes da data selecionada -->
+  <div class="selected-date-panel" *ngIf="selectedDate">
+    <div class="panel-header">
+      <h3>{{ format(selectedDate, 'dd/MM/yyyy') }}</h3>
+      <button mat-icon-button (click)="selectedDate = null">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="appointments-list">
+      <div 
+        class="appointment-card"
+        *ngFor="let appointment of getAppointmentsForDate(selectedDate)"
+      >
+        <div class="appointment-time">
+          {{ formatTime(appointment.startsAt) }} - {{ formatTime(appointment.endsAt) }}
+        </div>
+        <div class="appointment-details">
+          <div class="service-name">{{ getServiceName(appointment.serviceId) }}</div>
+          <div class="client-name">{{ getClientName(appointment.clientId) }}</div>
+          <div class="appointment-status">
+            <mat-chip [class]="'status-' + getStatusColor(appointment.status)">
+              {{ appointment.status }}
+            </mat-chip>
           </div>
-          <mat-chip [color]="getStatusColor(appointment.status)" selected>
-            {{ appointment.status }}
-          </mat-chip>
+        </div>
+        <div class="appointment-notes" *ngIf="appointment.notes">
+          {{ appointment.notes }}
         </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+
+      <div class="no-appointments" *ngIf="getAppointmentsForDate(selectedDate).length === 0">
+        <p>Nenhuma marcação para este dia</p>
+        <button mat-button color="primary" (click)="onCreateAppointment()">
+          <mat-icon>add</mat-icon>
+          Criar Marcação
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

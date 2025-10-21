@@ -1,113 +1,102 @@
 <div class="dashboard">
-  <div class="dashboard-header">
-    <h1>Dashboard</h1>
-    <p>Visão geral da barbearia</p>
-  </div>
+  <h1>Dashboard</h1>
   
-  <!-- Stats Cards -->
+  <!-- Stats Grid -->
   <div class="stats-grid">
-    <mat-card class="stat-card">
-      <mat-card-content>
-        <div class="stat-content">
-          <div class="stat-icon appointments">
-            <mat-icon>event</mat-icon>
-          </div>
-          <div class="stat-info">
-            <h3>{{ todayAppointments }}</h3>
-            <p>Marcações Hoje</p>
-          </div>
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <mat-icon>event</mat-icon>
         </div>
-      </mat-card-content>
-    </mat-card>
-    
-    <mat-card class="stat-card">
-      <mat-card-content>
-        <div class="stat-content">
-          <div class="stat-icon customers">
-            <mat-icon>people</mat-icon>
-          </div>
-          <div class="stat-info">
-            <h3>{{ totalCustomers }}</h3>
-            <p>Total Clientes</p>
-          </div>
+      </div>
+      <h3 class="stat-value">{{ todayAppointments }}</h3>
+      <p class="stat-label">Marcações Hoje</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <mat-icon>people</mat-icon>
         </div>
-      </mat-card-content>
-    </mat-card>
-    
-    <mat-card class="stat-card">
-      <mat-card-content>
-        <div class="stat-content">
-          <div class="stat-icon revenue">
-            <mat-icon>euro</mat-icon>
-          </div>
-          <div class="stat-info">
-            <h3>€{{ monthlyRevenue }}</h3>
-            <p>Receita Mensal</p>
-          </div>
+      </div>
+      <h3 class="stat-value">{{ totalCustomers }}</h3>
+      <p class="stat-label">Total Clientes</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <mat-icon>euro</mat-icon>
         </div>
-      </mat-card-content>
-    </mat-card>
-    
-    <mat-card class="stat-card">
-      <mat-card-content>
-        <div class="stat-content">
-          <div class="stat-icon services">
-            <mat-icon>content_cut</mat-icon>
-          </div>
-          <div class="stat-info">
-            <h3>{{ activeServices }}</h3>
-            <p>Serviços Ativos</p>
-          </div>
+      </div>
+      <h3 class="stat-value">€{{ monthlyRevenue }}</h3>
+      <p class="stat-label">Receita Mensal</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <mat-icon>schedule</mat-icon>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+      <h3 class="stat-value">{{ pendingServices }}</h3>
+      <p class="stat-label">Serviços Pendentes</p>
+    </div>
   </div>
-  
-  <!-- Charts Row -->
-  <div class="charts-row">
-    <mat-card class="chart-card">
-      <mat-card-header>
-        <mat-card-title>Marcações por Semana</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Marcações por Semana</h3>
+      </div>
+      <div class="chart-content">
         <canvas baseChart
                 [data]="appointmentsChartData"
-                [options]="chartOptions"
-                type="line">
+                [options]="chartOptions">
         </canvas>
-      </mat-card-content>
-    </mat-card>
-    
-    <mat-card class="chart-card">
-      <mat-card-header>
-        <mat-card-title>Serviços Mais Populares</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Serviços Mais Populares</h3>
+      </div>
+      <div class="chart-content">
         <canvas baseChart
                 [data]="servicesChartData"
-                [options]="chartOptions"
-                type="doughnut">
+                [options]="chartOptions">
         </canvas>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
-  
+
   <!-- Recent Appointments -->
-  <mat-card class="recent-appointments">
-    <mat-card-header>
-      <mat-card-title>Marcações Recentes</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-list>
-        <mat-list-item *ngFor="let appointment of recentAppointments">
-          <mat-icon matListItemIcon>event</mat-icon>
-          <div matListItemTitle>{{ appointment.customerName }}</div>
-          <div matListItemLine>{{ appointment.serviceName }} - {{ appointment.time }}</div>
+  <div class="recent-appointments">
+    <div class="appointments-header">
+      <h3 class="appointments-title">Marcações Recentes</h3>
+    </div>
+    <div class="appointments-list">
+      <div class="appointment-item" *ngFor="let appointment of getRecentAppointments()">
+        <div class="appointment-icon">
+          <mat-icon>event</mat-icon>
+        </div>
+        <div class="appointment-details">
+          <div class="appointment-customer">{{ appointment.customerName }}</div>
+          <div class="appointment-service">{{ appointment.serviceName }}</div>
+          <div class="appointment-time">{{ appointment.time }}</div>
+        </div>
+        <div class="appointment-status">
           <mat-chip [color]="getStatusColor(appointment.status)" selected>
-            {{ appointment.status }}
+            {{ appointment.status === 'CONFIRMED' ? 'Confirmado' : 
+               appointment.status === 'PENDING' ? 'Pendente' : 'Cancelado' }}
           </mat-chip>
-        </mat-list-item>
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
+        </div>
+      </div>
+      
+      <div class="no-appointments" *ngIf="getRecentAppointments().length === 0">
+        <p>Nenhuma marcação para hoje</p>
+      </div>
+    </div>
+  </div>
 </div>

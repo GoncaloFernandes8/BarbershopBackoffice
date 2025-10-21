@@ -1,15 +1,24 @@
-<div class="app-container">
+<div class="app-container" [class.sidebar-collapsed]="isSidebarCollapsed">
   <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
-  
+  <app-sidebar 
+    [isOpen]="isSidebarOpen" 
+    [isCollapsed]="isSidebarCollapsed"
+    (sidebarToggle)="closeSidebar()"
+    (sidebarCollapse)="toggleSidebarCollapse()">
+  </app-sidebar>
+
   <!-- Main Content -->
   <div class="main-content">
     <!-- Header -->
-    <app-header></app-header>
-    
-    <!-- Page Content -->
-    <main class="content">
+    <app-header 
+      [userName]="'Admin'"
+      [pageTitle]="currentPageTitle"
+      (sidebarToggle)="toggleSidebar()">
+    </app-header>
+
+    <!-- Content -->
+  <div class="content">
       <router-outlet></router-outlet>
-    </main>
+    </div>
   </div>
 </div>

@@ -1,1 +1,87 @@
-<p>services works!</p>
+<div class="services-page">
+  <div class="page-header">
+    <h1>Gestão de Serviços</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+      <mat-icon>add</mat-icon>
+      Novo Serviço
+    </button>
+  </div>
+
+  <div class="services-content">
+    <div class="no-services-card" *ngIf="services.length === 0">
+      <div class="no-services-content">
+        <div class="no-services-icon">
+          <mat-icon>build</mat-icon>
+        </div>
+        <h3>Nenhum serviço cadastrado</h3>
+        <p>Comece adicionando o primeiro serviço ao sistema.</p>
+        <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+          <mat-icon>add</mat-icon>
+          Adicionar Serviço
+        </button>
+      </div>
+    </div>
+
+    <div class="services-table-card" *ngIf="services.length > 0">
+      <table mat-table [dataSource]="services" class="services-table-content">
+        <!-- Nome Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let service">
+            {{ service.name }}
+          </td>
+        </ng-container>
+
+        <!-- Duração Column -->
+        <ng-container matColumnDef="duration">
+          <th mat-header-cell *matHeaderCellDef>Duração</th>
+          <td mat-cell *matCellDef="let service">
+            {{ formatDuration(service.durationMin) }}
+          </td>
+        </ng-container>
+
+        <!-- Preço Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Preço</th>
+          <td mat-cell *matCellDef="let service">
+            {{ formatPrice(service.priceCents) }}
+          </td>
+        </ng-container>
+
+        <!-- Ativo Column -->
+        <ng-container matColumnDef="active">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let service">
+            <mat-chip [class]="service.active ? 'status-active' : 'status-inactive'">
+              {{ service.active ? 'Ativo' : 'Inativo' }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let service">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(service)">
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="deleteService(service)" 
+                      *ngIf="service.active">
+                <mat-icon>delete</mat-icon>
+                <span>Desativar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+</div>

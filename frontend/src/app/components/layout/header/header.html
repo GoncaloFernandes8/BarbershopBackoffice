@@ -1,33 +1,192 @@
-<mat-toolbar class="header-toolbar">
-  <div class="header-content">
+<header class="header">
+  <div class="header-container">
+    <!-- Left Section -->
     <div class="header-left">
-      <button mat-icon-button (click)="toggleSidebar()" class="menu-button">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <h1 class="page-title">{{ pageTitle }}</h1>
-    </div>
-    
-    <div class="header-right">
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-button">
-        <mat-icon>account_circle</mat-icon>
-        <span>{{ userName }}</span>
+      <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+        <div class="hamburger">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
       </button>
       
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>person</mat-icon>
-          <span>Perfil</span>
+      <div class="page-info">
+        <h1 class="page-title">{{ pageTitle }}</h1>
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="header-right">
+      <!-- Notifications -->
+      <div class="notification-container">
+        <button class="notification-btn" [matMenuTriggerFor]="notificationMenu" aria-label="Notifications">
+          <mat-icon class="notification-icon">notifications</mat-icon>
+          <span class="notification-badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
         </button>
-        <button mat-menu-item>
-          <mat-icon>settings</mat-icon>
-          <span>Configurações</span>
+        
+        <mat-menu #notificationMenu="matMenu" class="notification-menu">
+          <div class="notification-header">
+            <h3>Notificações</h3>
+            <button 
+              class="mark-all-read" 
+              [class.loading]="isMarkingAsRead"
+              [class.success]="markReadSuccess"
+              [disabled]="isMarkingAsRead || notificationCount === 0"
+              (click)="markAllAsRead(); $event.stopPropagation()">
+              <mat-icon class="mark-read-icon">
+                {{ isMarkingAsRead ? 'refresh' : markReadSuccess ? 'check_circle' : 'done_all' }}
+              </mat-icon>
+              <span>
+                {{ isMarkingAsRead ? 'Marcando...' : markReadSuccess ? 'Marcadas!' : 'Marcar todas' }}
+              </span>
+            </button>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="notification-list">
+            <div class="notification-item">
+              <mat-icon class="notification-item-icon">event</mat-icon>
+              <div class="notification-content">
+                <p class="notification-text">Nova marcação agendada</p>
+                <span class="notification-time">Há 5 minutos</span>
+              </div>
+            </div>
+            <div class="notification-item">
+              <mat-icon class="notification-item-icon">person_add</mat-icon>
+              <div class="notification-content">
+                <p class="notification-text">Novo cliente cadastrado</p>
+                <span class="notification-time">Há 1 hora</span>
+              </div>
+            </div>
+          </div>
+        </mat-menu>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button class="quick-action-btn" matTooltip="Adicionar Cliente" (click)="openAddCustomerModal()">
+          <mat-icon>person_add</mat-icon>
         </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          <span>Sair</span>
+        <button class="quick-action-btn" matTooltip="Nova Marcação">
+          <mat-icon>event</mat-icon>
         </button>
-      </mat-menu>
+      </div>
+
+      <!-- User Profile -->
+      <div class="user-profile">
+        <button class="user-profile-btn" [matMenuTriggerFor]="userMenu" aria-label="User menu">
+          <div class="user-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+          <div class="user-details">
+            <span class="user-name">{{ userName }}</span>
+            <span class="user-role">Administrador</span>
+          </div>
+          <mat-icon class="user-dropdown-icon">keyboard_arrow_down</mat-icon>
+        </button>
+        
+        <mat-menu #userMenu="matMenu" class="user-menu">
+          <div class="user-menu-header">
+            <div class="user-menu-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+            <div class="user-menu-info">
+              <p class="user-menu-name">{{ userName }}</p>
+              <p class="user-menu-email">admin@barbershop.com</p>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item class="menu-item">
+            <mat-icon class="menu-item-icon">person</mat-icon>
+            <span>Meu Perfil</span>
+          </button>
+          
+          <button mat-menu-item class="menu-item">
+            <mat-icon class="menu-item-icon">settings</mat-icon>
+            <span>Configurações</span>
+          </button>
+          
+          <button mat-menu-item class="menu-item">
+            <mat-icon class="menu-item-icon">help</mat-icon>
+            <span>Ajuda</span>
+          </button>
+          
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item class="menu-item logout-item" (click)="logout()">
+            <mat-icon class="menu-item-icon">logout</mat-icon>
+            <span>Sair</span>
+          </button>
+        </mat-menu>
+      </div>
     </div>
   </div>
-</mat-toolbar>
+</header>
+
+<!-- Add Customer Modal -->
+<div class="modal-overlay" [class.open]="isAddCustomerModalOpen" (click)="closeAddCustomerModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">Adicionar Novo Cliente</h2>
+      <button class="modal-close" (click)="closeAddCustomerModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-content">
+      <form class="customer-form" (ngSubmit)="addCustomer()" #customerForm="ngForm">
+        <div class="form-group">
+          <label for="customerName" class="form-label">Nome Completo</label>
+          <input 
+            type="text" 
+            id="customerName" 
+            name="customerName"
+            [(ngModel)]="newCustomer.name"
+            class="form-input"
+            placeholder="Ex: João Silva"
+            required>
+        </div>
+        
+        <div class="form-group">
+          <label for="customerPhone" class="form-label">Número de Telefone</label>
+          <input 
+            type="tel" 
+            id="customerPhone" 
+            name="customerPhone"
+            [(ngModel)]="newCustomer.phone"
+            class="form-input"
+            placeholder="Ex: +351 912 345 678"
+            required>
+        </div>
+        
+        <div class="form-group">
+          <label for="customerEmail" class="form-label">Email</label>
+          <input 
+            type="email" 
+            id="customerEmail" 
+            name="customerEmail"
+            [(ngModel)]="newCustomer.email"
+            class="form-input"
+            placeholder="Ex: joao.silva@email.com"
+            required>
+        </div>
+        
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-cancel" 
+            (click)="closeAddCustomerModal()">
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="btn-submit"
+            [disabled]="!customerForm.valid || isAddingCustomer">
+            <mat-icon *ngIf="isAddingCustomer" class="loading-icon">refresh</mat-icon>
+            <span>{{ isAddingCustomer ? 'Adicionando...' : 'Adicionar Cliente' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

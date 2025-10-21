@@ -1,1 +1,76 @@
-<p>customers works!</p>
+<div class="customers-page">
+  <div class="page-header">
+    <h1>Gestão de Clientes</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+      <mat-icon>add</mat-icon>
+      Novo Cliente
+    </button>
+  </div>
+
+  <div class="customers-content">
+    <div class="no-customers-card" *ngIf="clients.length === 0">
+      <div class="no-customers-content">
+        <div class="no-customers-icon">
+          <mat-icon>person_add</mat-icon>
+        </div>
+        <h3>Nenhum cliente cadastrado</h3>
+        <p>Comece adicionando o primeiro cliente ao sistema.</p>
+        <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-button">
+          <mat-icon>add</mat-icon>
+          Adicionar Cliente
+        </button>
+      </div>
+    </div>
+
+    <div class="customers-table-card" *ngIf="clients.length > 0">
+      <table mat-table [dataSource]="clients" class="customers-table-content">
+        <!-- Nome Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let client">
+            {{ client.name }}
+          </td>
+        </ng-container>
+
+        <!-- Telefone Column -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Telefone</th>
+          <td mat-cell *matCellDef="let client">
+            {{ client.phone }}
+          </td>
+        </ng-container>
+
+        <!-- Data Criação Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Data de Criação</th>
+          <td mat-cell *matCellDef="let client">
+            {{ formatDate(client.createdAt) }}
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let client">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(client)">
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="deleteClient(client)">
+                <mat-icon>delete</mat-icon>
+                <span>Excluir</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+</div>

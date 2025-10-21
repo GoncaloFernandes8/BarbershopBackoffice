@@ -1,4 +1,209 @@
-/* You can add global styles to this file, and also import other style files */
+/* Import design tokens */
+@import './styles/design-tokens.css';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+  background: linear-gradient(180deg, 
+    var(--color-background) 0%, 
+    rgba(59, 64, 83, 0.3) 60%, 
+    var(--color-background) 100%);
+  color: var(--color-text);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  height: 100vh;
+  background: var(--color-background);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 250px; /* Largura da sidebar */
+  background: var(--color-background);
+}
+
+.content {
+  flex: 1;
+  padding: var(--space-6);
+  overflow-y: auto;
+  background: var(--color-background);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .content {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: var(--space-3);
+  }
+  
+  h1 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  h2 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  h3 {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: var(--space-2);
+  }
+  
+  h1 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  h2 {
+    font-size: var(--font-size-xl);
+  }
+  
+  h3 {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text);
+  font-weight: var(--font-weight-bold);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+  margin: 0 0 var(--space-4) 0;
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  margin: 0 0 var(--space-3) 0;
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--space-2) 0;
+}
+
+p {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}
+
+/* Angular Material Menu Overrides */
+::ng-deep .mat-mdc-menu-panel {
+  background: linear-gradient(135deg, 
+    rgba(15, 15, 17, 0.95) 0%, 
+    rgba(22, 24, 29, 0.98) 100%) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(42, 48, 66, 0.3) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(195, 255, 90, 0.1) !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  background: transparent !important;
+  color: var(--color-text) !important;
+  transition: all var(--transition-base) !important;
+}
+
+::ng-deep .mat-mdc-menu-item:hover {
+  background: linear-gradient(90deg, 
+    rgba(195, 255, 90, 0.08) 0%, 
+    transparent 100%) !important;
+  color: var(--color-primary) !important;
+  transform: translateX(2px) !important;
+}
+
+::ng-deep .mat-mdc-divider {
+  border-color: rgba(42, 48, 66, 0.3) !important;
+}
+
+/* Override Material Design default colors */
+::ng-deep .mat-mdc-menu-panel .mat-mdc-menu-content {
+  background: transparent !important;
+}
+
+::ng-deep .mat-mdc-menu-panel .mat-mdc-menu-item {
+  color: var(--color-text) !important;
+}
+
+::ng-deep .mat-mdc-menu-panel .mat-mdc-menu-item .mat-icon {
+  color: inherit !important;
+}
