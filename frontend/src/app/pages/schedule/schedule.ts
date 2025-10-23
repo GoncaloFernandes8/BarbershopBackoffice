@@ -244,29 +244,53 @@ export class ScheduleComponent implements OnInit {
 
         <!-- Horário Manual -->
         <div class="form-section">
-          <label class="section-label">🕐 Ou Defina Manualmente (Formato 24h)</label>
-          <div class="time-inputs">
-            <mat-form-field appearance="outline" class="time-field">
-              <mat-label>Início</mat-label>
-              <input matInput 
-                     type="time" 
-                     formControlName="startTime" 
-                     required
-                     placeholder="09:00">
-              <mat-hint>Ex: 09:00</mat-hint>
-            </mat-form-field>
+          <label class="section-label">🕐 Ou Defina Manualmente</label>
+          <div class="time-inputs-custom">
+            <div class="time-input-group">
+              <label class="time-label">Início</label>
+              <div class="time-parts">
+                <input type="number" 
+                       class="hour-input"
+                       [value]="getStartHour()"
+                       (input)="setStartHour($event)"
+                       min="0" 
+                       max="23" 
+                       placeholder="09">
+                <span class="colon">:</span>
+                <input type="number" 
+                       class="minute-input"
+                       [value]="getStartMinute()"
+                       (input)="setStartMinute($event)"
+                       min="0" 
+                       max="59" 
+                       placeholder="00">
+              </div>
+              <span class="hint-text">Horas: 0-23</span>
+            </div>
 
             <span class="time-separator">até</span>
 
-            <mat-form-field appearance="outline" class="time-field">
-              <mat-label>Fim</mat-label>
-              <input matInput 
-                     type="time" 
-                     formControlName="endTime" 
-                     required
-                     placeholder="18:00">
-              <mat-hint>Ex: 18:00</mat-hint>
-            </mat-form-field>
+            <div class="time-input-group">
+              <label class="time-label">Fim</label>
+              <div class="time-parts">
+                <input type="number" 
+                       class="hour-input"
+                       [value]="getEndHour()"
+                       (input)="setEndHour($event)"
+                       min="0" 
+                       max="23" 
+                       placeholder="18">
+                <span class="colon">:</span>
+                <input type="number" 
+                       class="minute-input"
+                       [value]="getEndMinute()"
+                       (input)="setEndMinute($event)"
+                       min="0" 
+                       max="59" 
+                       placeholder="00">
+              </div>
+              <span class="hint-text">Horas: 0-23</span>
+            </div>
           </div>
         </div>
 
@@ -349,15 +373,69 @@ export class ScheduleComponent implements OnInit {
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
     
-    .time-inputs {
+    .time-inputs-custom {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      gap: 16px;
+      gap: 20px;
       align-items: center;
     }
     
-    .time-field {
-      width: 100%;
+    .time-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .time-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+    
+    .time-parts {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(42, 48, 66, 0.3);
+      border: 1px solid rgba(58, 65, 87, 0.6);
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.2s ease;
+    }
+    
+    .time-parts:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    .hour-input, .minute-input {
+      background: transparent;
+      border: none;
+      color: var(--color-text);
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      outline: none;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+    }
+    
+    .hour-input {
+      width: 50px;
+    }
+    
+    .minute-input {
+      width: 50px;
+    }
+    
+    .colon {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+    
+    .hint-text {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
     }
     
     .time-separator {
@@ -365,7 +443,6 @@ export class ScheduleComponent implements OnInit {
       color: var(--color-text-secondary);
       font-weight: 500;
       text-align: center;
-      padding-top: 8px;
     }
     
     .preview-section {
@@ -445,6 +522,56 @@ export class CreateWorkingHoursDialogComponent {
     const dayOfWeek = this.workingHoursForm.value.dayOfWeek;
     const days = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
     return days[dayOfWeek - 1] || '';
+  }
+
+  // Getters para exibir valores
+  getStartHour(): string {
+    const time = this.workingHoursForm.value.startTime;
+    if (!time) return '';
+    return time.split(':')[0];
+  }
+
+  getStartMinute(): string {
+    const time = this.workingHoursForm.value.startTime;
+    if (!time) return '';
+    return time.split(':')[1] || '00';
+  }
+
+  getEndHour(): string {
+    const time = this.workingHoursForm.value.endTime;
+    if (!time) return '';
+    return time.split(':')[0];
+  }
+
+  getEndMinute(): string {
+    const time = this.workingHoursForm.value.endTime;
+    if (!time) return '';
+    return time.split(':')[1] || '00';
+  }
+
+  // Setters para atualizar valores
+  setStartHour(event: any) {
+    const hour = event.target.value.padStart(2, '0');
+    const minute = this.getStartMinute() || '00';
+    this.workingHoursForm.patchValue({ startTime: `${hour}:${minute}` });
+  }
+
+  setStartMinute(event: any) {
+    const hour = this.getStartHour() || '00';
+    const minute = event.target.value.padStart(2, '0');
+    this.workingHoursForm.patchValue({ startTime: `${hour}:${minute}` });
+  }
+
+  setEndHour(event: any) {
+    const hour = event.target.value.padStart(2, '0');
+    const minute = this.getEndMinute() || '00';
+    this.workingHoursForm.patchValue({ endTime: `${hour}:${minute}` });
+  }
+
+  setEndMinute(event: any) {
+    const hour = this.getEndHour() || '00';
+    const minute = event.target.value.padStart(2, '0');
+    this.workingHoursForm.patchValue({ endTime: `${hour}:${minute}` });
   }
 
   onSubmit() {
