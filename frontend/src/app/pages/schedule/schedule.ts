@@ -649,25 +649,109 @@ export class CreateWorkingHoursDialogComponent {
 
         <!-- Datas Manuais -->
         <div class="form-section">
-          <label class="section-label">📅 Ou Defina Manualmente (Formato 24h)</label>
+          <label class="section-label">📅 Ou Defina Manualmente</label>
           
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Data e Hora de Início</mat-label>
-            <input matInput 
-                   type="datetime-local" 
-                   formControlName="startsAt" 
-                   required>
-            <mat-hint>Ex: 2025-10-25 09:00</mat-hint>
-          </mat-form-field>
+          <!-- Data e Hora de Início -->
+          <div class="datetime-group">
+            <label class="datetime-label">⏰ Início</label>
+            <div class="datetime-inputs">
+              <div class="date-part">
+                <input type="number" 
+                       class="day-input"
+                       [value]="getStartDay()"
+                       (input)="setStartDay($event)"
+                       min="1" 
+                       max="31" 
+                       placeholder="25">
+                <span class="slash">/</span>
+                <input type="number" 
+                       class="month-input"
+                       [value]="getStartMonth()"
+                       (input)="setStartMonth($event)"
+                       min="1" 
+                       max="12" 
+                       placeholder="10">
+                <span class="slash">/</span>
+                <input type="number" 
+                       class="year-input"
+                       [value]="getStartYear()"
+                       (input)="setStartYear($event)"
+                       min="2025" 
+                       max="2030" 
+                       placeholder="2025">
+              </div>
+              <span class="at-label">às</span>
+              <div class="time-part">
+                <input type="number" 
+                       class="hour-input-small"
+                       [value]="getStartHourTimeOff()"
+                       (input)="setStartHourTimeOff($event)"
+                       min="0" 
+                       max="23" 
+                       placeholder="09">
+                <span class="colon">:</span>
+                <input type="number" 
+                       class="minute-input-small"
+                       [value]="getStartMinuteTimeOff()"
+                       (input)="setStartMinuteTimeOff($event)"
+                       min="0" 
+                       max="59" 
+                       placeholder="00">
+              </div>
+            </div>
+            <span class="hint-text">Formato: DD/MM/AAAA HH:mm (24h)</span>
+          </div>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Data e Hora de Fim</mat-label>
-            <input matInput 
-                   type="datetime-local" 
-                   formControlName="endsAt" 
-                   required>
-            <mat-hint>Ex: 2025-10-25 18:00</mat-hint>
-          </mat-form-field>
+          <!-- Data e Hora de Fim -->
+          <div class="datetime-group">
+            <label class="datetime-label">🏁 Fim</label>
+            <div class="datetime-inputs">
+              <div class="date-part">
+                <input type="number" 
+                       class="day-input"
+                       [value]="getEndDay()"
+                       (input)="setEndDay($event)"
+                       min="1" 
+                       max="31" 
+                       placeholder="25">
+                <span class="slash">/</span>
+                <input type="number" 
+                       class="month-input"
+                       [value]="getEndMonth()"
+                       (input)="setEndMonth($event)"
+                       min="1" 
+                       max="12" 
+                       placeholder="10">
+                <span class="slash">/</span>
+                <input type="number" 
+                       class="year-input"
+                       [value]="getEndYear()"
+                       (input)="setEndYear($event)"
+                       min="2025" 
+                       max="2030" 
+                       placeholder="2025">
+              </div>
+              <span class="at-label">às</span>
+              <div class="time-part">
+                <input type="number" 
+                       class="hour-input-small"
+                       [value]="getEndHourTimeOff()"
+                       (input)="setEndHourTimeOff($event)"
+                       min="0" 
+                       max="23" 
+                       placeholder="18">
+                <span class="colon">:</span>
+                <input type="number" 
+                       class="minute-input-small"
+                       [value]="getEndMinuteTimeOff()"
+                       (input)="setEndMinuteTimeOff($event)"
+                       min="0" 
+                       max="59" 
+                       placeholder="00">
+              </div>
+            </div>
+            <span class="hint-text">Formato: DD/MM/AAAA HH:mm (24h)</span>
+          </div>
         </div>
 
         <!-- Motivo -->
@@ -760,6 +844,83 @@ export class CreateWorkingHoursDialogComponent {
     mat-chip-option:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .datetime-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .datetime-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    
+    .datetime-inputs {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .date-part, .time-part {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(42, 48, 66, 0.3);
+      border: 1px solid rgba(58, 65, 87, 0.6);
+      border-radius: 8px;
+      padding: 10px 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .date-part:focus-within, .time-part:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    .day-input, .month-input, .year-input,
+    .hour-input-small, .minute-input-small {
+      background: transparent;
+      border: none;
+      color: var(--color-text);
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      outline: none;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+    }
+    
+    .day-input, .month-input {
+      width: 35px;
+    }
+    
+    .year-input {
+      width: 60px;
+    }
+    
+    .hour-input-small, .minute-input-small {
+      width: 35px;
+    }
+    
+    .slash, .colon {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+    
+    .at-label {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      font-weight: 500;
+    }
+    
+    .hint-text {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      font-style: italic;
     }
     
     .preview-section {
@@ -916,6 +1077,171 @@ export class CreateTimeOffDialogComponent {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${day}/${month}/${year} às ${hours}:${minutes}`;
+  }
+
+  // Getters para Data/Hora de Início
+  getStartDay(): string {
+    const dateStr = this.timeOffForm.value.startsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getDate());
+  }
+
+  getStartMonth(): string {
+    const dateStr = this.timeOffForm.value.startsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getMonth() + 1);
+  }
+
+  getStartYear(): string {
+    const dateStr = this.timeOffForm.value.startsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getFullYear());
+  }
+
+  getStartHourTimeOff(): string {
+    const dateStr = this.timeOffForm.value.startsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getHours());
+  }
+
+  getStartMinuteTimeOff(): string {
+    const dateStr = this.timeOffForm.value.startsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getMinutes());
+  }
+
+  // Getters para Data/Hora de Fim
+  getEndDay(): string {
+    const dateStr = this.timeOffForm.value.endsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getDate());
+  }
+
+  getEndMonth(): string {
+    const dateStr = this.timeOffForm.value.endsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getMonth() + 1);
+  }
+
+  getEndYear(): string {
+    const dateStr = this.timeOffForm.value.endsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getFullYear());
+  }
+
+  getEndHourTimeOff(): string {
+    const dateStr = this.timeOffForm.value.endsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getHours());
+  }
+
+  getEndMinuteTimeOff(): string {
+    const dateStr = this.timeOffForm.value.endsAt;
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return String(date.getMinutes());
+  }
+
+  // Setters para Data/Hora de Início
+  setStartDay(event: any) {
+    this.updateStartDateTime({
+      day: parseInt(event.target.value) || 1
+    });
+  }
+
+  setStartMonth(event: any) {
+    this.updateStartDateTime({
+      month: parseInt(event.target.value) || 1
+    });
+  }
+
+  setStartYear(event: any) {
+    this.updateStartDateTime({
+      year: parseInt(event.target.value) || new Date().getFullYear()
+    });
+  }
+
+  setStartHourTimeOff(event: any) {
+    this.updateStartDateTime({
+      hour: parseInt(event.target.value) || 0
+    });
+  }
+
+  setStartMinuteTimeOff(event: any) {
+    this.updateStartDateTime({
+      minute: parseInt(event.target.value) || 0
+    });
+  }
+
+  // Setters para Data/Hora de Fim
+  setEndDay(event: any) {
+    this.updateEndDateTime({
+      day: parseInt(event.target.value) || 1
+    });
+  }
+
+  setEndMonth(event: any) {
+    this.updateEndDateTime({
+      month: parseInt(event.target.value) || 1
+    });
+  }
+
+  setEndYear(event: any) {
+    this.updateEndDateTime({
+      year: parseInt(event.target.value) || new Date().getFullYear()
+    });
+  }
+
+  setEndHourTimeOff(event: any) {
+    this.updateEndDateTime({
+      hour: parseInt(event.target.value) || 0
+    });
+  }
+
+  setEndMinuteTimeOff(event: any) {
+    this.updateEndDateTime({
+      minute: parseInt(event.target.value) || 0
+    });
+  }
+
+  // Helpers para atualizar data/hora
+  private updateStartDateTime(changes: { day?: number; month?: number; year?: number; hour?: number; minute?: number }) {
+    const current = this.timeOffForm.value.startsAt ? new Date(this.timeOffForm.value.startsAt) : new Date();
+    
+    const day = changes.day !== undefined ? changes.day : current.getDate();
+    const month = changes.month !== undefined ? changes.month - 1 : current.getMonth();
+    const year = changes.year !== undefined ? changes.year : current.getFullYear();
+    const hour = changes.hour !== undefined ? changes.hour : current.getHours();
+    const minute = changes.minute !== undefined ? changes.minute : current.getMinutes();
+    
+    const newDate = new Date(year, month, day, hour, minute);
+    this.timeOffForm.patchValue({
+      startsAt: this.formatDateTimeLocal(newDate)
+    });
+  }
+
+  private updateEndDateTime(changes: { day?: number; month?: number; year?: number; hour?: number; minute?: number }) {
+    const current = this.timeOffForm.value.endsAt ? new Date(this.timeOffForm.value.endsAt) : new Date();
+    
+    const day = changes.day !== undefined ? changes.day : current.getDate();
+    const month = changes.month !== undefined ? changes.month - 1 : current.getMonth();
+    const year = changes.year !== undefined ? changes.year : current.getFullYear();
+    const hour = changes.hour !== undefined ? changes.hour : current.getHours();
+    const minute = changes.minute !== undefined ? changes.minute : current.getMinutes();
+    
+    const newDate = new Date(year, month, day, hour, minute);
+    this.timeOffForm.patchValue({
+      endsAt: this.formatDateTimeLocal(newDate)
+    });
   }
 
   onSubmit() {
