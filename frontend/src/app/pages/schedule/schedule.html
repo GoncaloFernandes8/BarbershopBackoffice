@@ -1,0 +1,157 @@
+<div class="schedule-page">
+  <div class="page-header">
+    <h1>Gestão de Horários</h1>
+    
+    <div class="filters-card">
+      <div class="filters">
+        <mat-form-field appearance="outline" class="barber-select">
+          <mat-label>Barbeiro</mat-label>
+          <mat-select [(value)]="selectedBarber" (selectionChange)="onBarberChange()">
+            <mat-option *ngFor="let barber of barbers" [value]="barber.id">
+              {{ barber.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <mat-tab-group class="schedule-tabs">
+    <!-- Horários de Trabalho Tab -->
+    <mat-tab label="Horários de Trabalho">
+      <div class="tab-content">
+        <div class="tab-header">
+          <h2>Horários de Trabalho</h2>
+          <button mat-raised-button color="primary" (click)="openCreateWorkingHoursDialog()">
+            <mat-icon>add</mat-icon>
+            Adicionar Horário
+          </button>
+        </div>
+
+        <div class="working-hours-card" *ngIf="workingHours.length > 0">
+          <table mat-table [dataSource]="workingHours" class="working-hours-table">
+            <!-- Day of Week Column -->
+            <ng-container matColumnDef="dayOfWeek">
+              <th mat-header-cell *matHeaderCellDef>Dia da Semana</th>
+              <td mat-cell *matCellDef="let wh">
+                {{ getDayName(wh.dayOfWeek) }}
+              </td>
+            </ng-container>
+
+            <!-- Start Time Column -->
+            <ng-container matColumnDef="startTime">
+              <th mat-header-cell *matHeaderCellDef>Hora de Início</th>
+              <td mat-cell *matCellDef="let wh">
+                {{ wh.startTime }}
+              </td>
+            </ng-container>
+
+            <!-- End Time Column -->
+            <ng-container matColumnDef="endTime">
+              <th mat-header-cell *matHeaderCellDef>Hora de Fim</th>
+              <td mat-cell *matCellDef="let wh">
+                {{ wh.endTime }}
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Ações</th>
+              <td mat-cell *matCellDef="let wh">
+                <button mat-icon-button color="warn" (click)="deleteWorkingHours(wh.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="workingHoursColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: workingHoursColumns;"></tr>
+          </table>
+        </div>
+
+        <div class="no-data-card" *ngIf="workingHours.length === 0">
+          <div class="no-data-content">
+            <div class="no-data-icon">
+              <mat-icon>schedule</mat-icon>
+            </div>
+            <h3>Nenhum horário de trabalho definido</h3>
+            <p>Adicione horários de trabalho para este barbeiro.</p>
+            <button mat-raised-button color="primary" (click)="openCreateWorkingHoursDialog()">
+              <mat-icon>add</mat-icon>
+              Adicionar Horário
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Folgas Tab -->
+    <mat-tab label="Folgas/Férias">
+      <div class="tab-content">
+        <div class="tab-header">
+          <h2>Folgas e Férias</h2>
+          <button mat-raised-button color="primary" (click)="openCreateTimeOffDialog()">
+            <mat-icon>add</mat-icon>
+            Adicionar Folga
+          </button>
+        </div>
+
+        <div class="time-off-card" *ngIf="timeOffs.length > 0">
+          <table mat-table [dataSource]="timeOffs" class="time-off-table">
+            <!-- Starts At Column -->
+            <ng-container matColumnDef="startsAt">
+              <th mat-header-cell *matHeaderCellDef>Início</th>
+              <td mat-cell *matCellDef="let timeOff">
+                {{ formatDateTime(timeOff.startsAt) }}
+              </td>
+            </ng-container>
+
+            <!-- Ends At Column -->
+            <ng-container matColumnDef="endsAt">
+              <th mat-header-cell *matHeaderCellDef>Fim</th>
+              <td mat-cell *matCellDef="let timeOff">
+                {{ formatDateTime(timeOff.endsAt) }}
+              </td>
+            </ng-container>
+
+            <!-- Reason Column -->
+            <ng-container matColumnDef="reason">
+              <th mat-header-cell *matHeaderCellDef>Motivo</th>
+              <td mat-cell *matCellDef="let timeOff">
+                {{ timeOff.reason || 'N/A' }}
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Ações</th>
+              <td mat-cell *matCellDef="let timeOff">
+                <button mat-icon-button color="warn" (click)="deleteTimeOff(timeOff.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="timeOffColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: timeOffColumns;"></tr>
+          </table>
+        </div>
+
+        <div class="no-data-card" *ngIf="timeOffs.length === 0">
+          <div class="no-data-content">
+            <div class="no-data-icon">
+              <mat-icon>event_busy</mat-icon>
+            </div>
+            <h3>Nenhuma folga registrada</h3>
+            <p>Adicione folgas ou férias para este barbeiro.</p>
+            <button mat-raised-button color="primary" (click)="openCreateTimeOffDialog()">
+              <mat-icon>add</mat-icon>
+              Adicionar Folga
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+

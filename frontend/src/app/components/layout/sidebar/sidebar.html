@@ -67,6 +67,14 @@
           <div class="nav-indicator"></div>
         </a>
       </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/schedule" routerLinkActive="active" (click)="closeSidebar()" [title]="isCollapsed ? 'Horários' : ''">
+          <mat-icon class="nav-icon">schedule</mat-icon>
+          <span class="nav-text" *ngIf="!isCollapsed">Horários</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
     </ul>
   </div>
 

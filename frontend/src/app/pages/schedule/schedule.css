@@ -1,0 +1,247 @@
+.schedule-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  color: var(--text-primary);
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+}
+
+.filters-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(195, 255, 90, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.barber-select {
+  min-width: 250px;
+}
+
+.schedule-tabs {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(195, 255, 90, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.tab-content {
+  padding: 24px 0;
+}
+
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tab-header h2 {
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.working-hours-card,
+.time-off-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(195, 255, 90, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.working-hours-table,
+.time-off-table {
+  width: 100%;
+  background: transparent;
+}
+
+.working-hours-table th,
+.time-off-table th {
+  background: rgba(195, 255, 90, 0.1);
+  color: #C3FF5A;
+  font-weight: 600;
+  padding: 16px;
+  text-align: left;
+}
+
+.working-hours-table td,
+.time-off-table td {
+  color: var(--text-primary);
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.working-hours-table tr:hover,
+.time-off-table tr:hover {
+  background: rgba(195, 255, 90, 0.05);
+}
+
+.no-data-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(195, 255, 90, 0.1);
+  border-radius: 12px;
+  padding: 48px;
+}
+
+.no-data-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.no-data-icon {
+  width: 80px;
+  height: 80px;
+  background: rgba(195, 255, 90, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-data-icon mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #C3FF5A;
+}
+
+.no-data-content h3 {
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.no-data-content p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Material overrides for dark theme */
+::ng-deep .schedule-page {
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: rgba(195, 255, 90, 0.3) !important;
+    }
+
+    .mat-mdc-select-value,
+    .mat-mdc-input-element {
+      color: var(--text-primary) !important;
+    }
+
+    .mat-mdc-floating-label {
+      color: rgba(195, 255, 90, 0.7) !important;
+    }
+
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #C3FF5A !important;
+      }
+    }
+  }
+
+  .mat-mdc-tab-group {
+    .mat-mdc-tab-labels {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .mat-mdc-tab {
+      color: var(--text-secondary);
+      
+      &.mdc-tab--active {
+        color: #C3FF5A;
+      }
+    }
+
+    .mat-mdc-tab-header {
+      border-bottom: none;
+    }
+
+    .mdc-tab-indicator__content--underline {
+      border-color: #C3FF5A;
+    }
+  }
+
+  .mat-mdc-button,
+  .mat-mdc-raised-button {
+    &.mat-primary {
+      --mdc-protected-button-container-color: #C3FF5A;
+      --mdc-protected-button-label-text-color: #000;
+    }
+
+    &.mat-warn {
+      --mdc-protected-button-container-color: #ef4444;
+      --mdc-protected-button-label-text-color: #fff;
+    }
+  }
+
+  .mat-mdc-icon-button {
+    &.mat-warn {
+      --mat-icon-button-state-layer-color: #ef4444;
+      color: #ef4444;
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .schedule-page {
+    padding: 16px;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .barber-select {
+    width: 100%;
+  }
+
+  .tab-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .tab-header button {
+    width: 100%;
+  }
+}
+

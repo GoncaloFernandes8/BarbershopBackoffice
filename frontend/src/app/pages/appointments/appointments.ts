@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -28,6 +29,7 @@ import { ptBR } from 'date-fns/locale';
     MatTableModule,
     MatChipsModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -157,8 +159,26 @@ export class AppointmentsComponent implements OnInit {
     }
   }
 
+  viewAppointmentDetails(appointment: Appointment) {
+    const client = this.clients.find(c => c.id === appointment.clientId);
+    const service = this.services.find(s => s.id === appointment.serviceId);
+    const barber = this.barbers.find(b => b.id === appointment.barberId);
+    
+    const details = `
+      <strong>Cliente:</strong> ${client?.name || 'N/A'}<br>
+      <strong>Telefone:</strong> ${client?.phone || 'N/A'}<br>
+      <strong>Serviço:</strong> ${service?.name || 'N/A'}<br>
+      <strong>Barbeiro:</strong> ${barber?.name || 'N/A'}<br>
+      <strong>Data:</strong> ${this.formatDate(appointment.startsAt)}<br>
+      <strong>Horário:</strong> ${this.formatTime(appointment.startsAt)} - ${this.formatTime(appointment.endsAt)}<br>
+      <strong>Status:</strong> ${this.getStatusText(appointment.status)}<br>
+      ${appointment.notes ? `<strong>Notas:</strong> ${appointment.notes}` : ''}
+    `;
+    
+    this.snackBar.open('Detalhes da marcação', 'Fechar', { duration: 5000 });
+  }
+
   editAppointment(appointment: Appointment) {
-    // TODO: Implementar edição de marcação
-    this.snackBar.open('Funcionalidade de edição em desenvolvimento', 'Fechar', { duration: 3000 });
+    this.snackBar.open('⚠️ Nota: O backend não possui endpoint PUT /appointments. Para editar, cancele e crie uma nova marcação.', 'Fechar', { duration: 5000 });
   }
 }

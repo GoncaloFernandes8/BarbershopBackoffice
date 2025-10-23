@@ -43,6 +43,14 @@ export interface WorkingHours {
   endTime: string;
 }
 
+export interface TimeOff {
+  id: number;
+  barberId: number;
+  startsAt: string;
+  endsAt: string;
+  reason: string;
+}
+
 export interface CreateAppointmentRequest {
   barberId: number;
   serviceId: number;
@@ -168,5 +176,37 @@ export class ApiService {
   // Working Hours
   getWorkingHours(barberId: number): Observable<WorkingHours[]> {
     return this.http.get<WorkingHours[]>(`${this.baseUrl}/working-hours?barberId=${barberId}`);
+  }
+
+  createWorkingHours(workingHours: { barberId: number; dayOfWeek: number; startTime: string; endTime: string }): Observable<WorkingHours> {
+    return this.http.post<WorkingHours>(`${this.baseUrl}/working-hours`, workingHours);
+  }
+
+  deleteWorkingHours(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/working-hours/${id}`);
+  }
+
+  // Time-off
+  getTimeOff(barberId: number, from: string, to: string): Observable<TimeOff[]> {
+    return this.http.get<TimeOff[]>(`${this.baseUrl}/time-off`, {
+      params: {
+        barberId: barberId.toString(),
+        from: from,
+        to: to
+      }
+    });
+  }
+
+  createTimeOff(timeOff: { barberId: number; startsAt: string; endsAt: string; reason: string }): Observable<TimeOff> {
+    return this.http.post<TimeOff>(`${this.baseUrl}/time-off`, timeOff);
+  }
+
+  deleteTimeOff(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/time-off/${id}`);
+  }
+
+  // Update Appointment
+  updateAppointment(id: string, appointment: Partial<CreateAppointmentRequest>): Observable<Appointment> {
+    return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}`, appointment);
   }
 }

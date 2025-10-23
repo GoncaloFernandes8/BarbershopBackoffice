@@ -5,6 +5,7 @@ import { CustomersComponent } from './pages/customers/customers';
 import { AppointmentsComponent } from './pages/appointments/appointments';
 import { ServicesComponent } from './pages/services/services';
 import { BarbersComponent } from './pages/barbers/barbers';
+import { ScheduleComponent } from './pages/schedule/schedule';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -14,5 +15,6 @@ export const routes: Routes = [
   { path: 'appointments', component: AppointmentsComponent },
   { path: 'services', component: ServicesComponent },
   { path: 'barbers', component: BarbersComponent },
+  { path: 'schedule', component: ScheduleComponent },
   { path: '**', redirectTo: '/dashboard' }
 ];
