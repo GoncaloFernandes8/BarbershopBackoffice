@@ -159,7 +159,7 @@ export class ScheduleComponent implements OnInit {
           this.snackBar.open('Horário deletado com sucesso', 'Fechar', { duration: 3000 });
           this.loadWorkingHours();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao deletar horário:', error);
           this.snackBar.open('Erro ao deletar horário', 'Fechar', { duration: 3000 });
         }
@@ -174,7 +174,7 @@ export class ScheduleComponent implements OnInit {
           this.snackBar.open('Folga deletada com sucesso', 'Fechar', { duration: 3000 });
           this.loadTimeOffs();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao deletar folga:', error);
           this.snackBar.open('Erro ao deletar folga', 'Fechar', { duration: 3000 });
         }
@@ -294,7 +294,7 @@ export class CreateWorkingHoursDialogComponent {
           this.snackBar.open('Horário criado com sucesso', 'Fechar', { duration: 3000 });
           this.dialogRef.close(true);
         },
-        error: (error) => {
+        error: (error: any) => {
           this.loading = false;
           console.error('Erro ao criar horário:', error);
           this.snackBar.open('Erro ao criar horário', 'Fechar', { duration: 3000 });
@@ -412,7 +412,7 @@ export class CreateTimeOffDialogComponent {
           this.snackBar.open('Folga criada com sucesso', 'Fechar', { duration: 3000 });
           this.dialogRef.close(true);
         },
-        error: (error) => {
+        error: (error: any) => {
           this.loading = false;
           console.error('Erro ao criar folga:', error);
           this.snackBar.open('Erro ao criar folga', 'Fechar', { duration: 3000 });
