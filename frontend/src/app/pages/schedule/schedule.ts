@@ -656,46 +656,46 @@ export class CreateWorkingHoursDialogComponent {
             <label class="datetime-label">⏰ Início</label>
             <div class="datetime-inputs">
               <div class="date-part">
-                <input type="number" 
+                <input type="text" 
                        class="day-input"
                        [value]="getStartDay()"
                        (input)="setStartDay($event)"
-                       min="1" 
-                       max="31" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="25">
                 <span class="slash">/</span>
-                <input type="number" 
+                <input type="text" 
                        class="month-input"
                        [value]="getStartMonth()"
                        (input)="setStartMonth($event)"
-                       min="1" 
-                       max="12" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="10">
                 <span class="slash">/</span>
-                <input type="number" 
+                <input type="text" 
                        class="year-input"
                        [value]="getStartYear()"
                        (input)="setStartYear($event)"
-                       min="2025" 
-                       max="2030" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="4"
                        placeholder="2025">
               </div>
               <span class="at-label">às</span>
               <div class="time-part">
-                <input type="number" 
+                <input type="text" 
                        class="hour-input-small"
                        [value]="getStartHourTimeOff()"
                        (input)="setStartHourTimeOff($event)"
-                       min="0" 
-                       max="23" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="09">
                 <span class="colon">:</span>
-                <input type="number" 
+                <input type="text" 
                        class="minute-input-small"
                        [value]="getStartMinuteTimeOff()"
                        (input)="setStartMinuteTimeOff($event)"
-                       min="0" 
-                       max="59" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="00">
               </div>
             </div>
@@ -707,46 +707,46 @@ export class CreateWorkingHoursDialogComponent {
             <label class="datetime-label">🏁 Fim</label>
             <div class="datetime-inputs">
               <div class="date-part">
-                <input type="number" 
+                <input type="text" 
                        class="day-input"
                        [value]="getEndDay()"
                        (input)="setEndDay($event)"
-                       min="1" 
-                       max="31" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="25">
                 <span class="slash">/</span>
-                <input type="number" 
+                <input type="text" 
                        class="month-input"
                        [value]="getEndMonth()"
                        (input)="setEndMonth($event)"
-                       min="1" 
-                       max="12" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="10">
                 <span class="slash">/</span>
-                <input type="number" 
+                <input type="text" 
                        class="year-input"
                        [value]="getEndYear()"
                        (input)="setEndYear($event)"
-                       min="2025" 
-                       max="2030" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="4"
                        placeholder="2025">
               </div>
               <span class="at-label">às</span>
               <div class="time-part">
-                <input type="number" 
+                <input type="text" 
                        class="hour-input-small"
                        [value]="getEndHourTimeOff()"
                        (input)="setEndHourTimeOff($event)"
-                       min="0" 
-                       max="23" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="18">
                 <span class="colon">:</span>
-                <input type="number" 
+                <input type="text" 
                        class="minute-input-small"
                        [value]="getEndMinuteTimeOff()"
                        (input)="setEndMinuteTimeOff($event)"
-                       min="0" 
-                       max="59" 
+                       (keypress)="onlyNumbers($event)"
+                       maxlength="2"
                        placeholder="00">
               </div>
             </div>
@@ -891,18 +891,25 @@ export class CreateWorkingHoursDialogComponent {
       text-align: center;
       outline: none;
       font-family: 'JetBrains Mono', 'Courier New', monospace;
+      flex-shrink: 0;
     }
     
     .day-input, .month-input {
       width: 35px;
+      min-width: 35px;
+      max-width: 35px;
     }
     
     .year-input {
       width: 60px;
+      min-width: 60px;
+      max-width: 60px;
     }
     
     .hour-input-small, .minute-input-small {
       width: 35px;
+      min-width: 35px;
+      max-width: 35px;
     }
     
     .slash, .colon {
@@ -1151,66 +1158,92 @@ export class CreateTimeOffDialogComponent {
     return String(date.getMinutes());
   }
 
+  // Método para permitir apenas números
+  onlyNumbers(event: KeyboardEvent): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
   // Setters para Data/Hora de Início
   setStartDay(event: any) {
-    this.updateStartDateTime({
-      day: parseInt(event.target.value) || 1
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 31) value = 31;
+    if (value < 1) value = 1;
+    this.updateStartDateTime({ day: value });
   }
 
   setStartMonth(event: any) {
-    this.updateStartDateTime({
-      month: parseInt(event.target.value) || 1
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 12) value = 12;
+    if (value < 1) value = 1;
+    this.updateStartDateTime({ month: value });
   }
 
   setStartYear(event: any) {
-    this.updateStartDateTime({
-      year: parseInt(event.target.value) || new Date().getFullYear()
-    });
+    const value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    this.updateStartDateTime({ year: value });
   }
 
   setStartHourTimeOff(event: any) {
-    this.updateStartDateTime({
-      hour: parseInt(event.target.value) || 0
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 23) value = 23;
+    if (value < 0) value = 0;
+    this.updateStartDateTime({ hour: value });
   }
 
   setStartMinuteTimeOff(event: any) {
-    this.updateStartDateTime({
-      minute: parseInt(event.target.value) || 0
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 59) value = 59;
+    if (value < 0) value = 0;
+    this.updateStartDateTime({ minute: value });
   }
 
   // Setters para Data/Hora de Fim
   setEndDay(event: any) {
-    this.updateEndDateTime({
-      day: parseInt(event.target.value) || 1
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 31) value = 31;
+    if (value < 1) value = 1;
+    this.updateEndDateTime({ day: value });
   }
 
   setEndMonth(event: any) {
-    this.updateEndDateTime({
-      month: parseInt(event.target.value) || 1
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 12) value = 12;
+    if (value < 1) value = 1;
+    this.updateEndDateTime({ month: value });
   }
 
   setEndYear(event: any) {
-    this.updateEndDateTime({
-      year: parseInt(event.target.value) || new Date().getFullYear()
-    });
+    const value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    this.updateEndDateTime({ year: value });
   }
 
   setEndHourTimeOff(event: any) {
-    this.updateEndDateTime({
-      hour: parseInt(event.target.value) || 0
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 23) value = 23;
+    if (value < 0) value = 0;
+    this.updateEndDateTime({ hour: value });
   }
 
   setEndMinuteTimeOff(event: any) {
-    this.updateEndDateTime({
-      minute: parseInt(event.target.value) || 0
-    });
+    let value = parseInt(event.target.value);
+    if (isNaN(value)) return;
+    if (value > 59) value = 59;
+    if (value < 0) value = 0;
+    this.updateEndDateTime({ minute: value });
   }
 
   // Helpers para atualizar data/hora
