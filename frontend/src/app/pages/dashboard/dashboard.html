@@ -1,101 +1,120 @@
 <div class="dashboard">
   <h1>Dashboard</h1>
   
-  <!-- Stats Grid -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-header">
-        <div class="stat-icon">
-          <mat-icon>event</mat-icon>
-        </div>
-      </div>
-      <h3 class="stat-value">{{ todayAppointments }}</h3>
-      <p class="stat-label">Marcações Hoje</p>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-header">
-        <div class="stat-icon">
-          <mat-icon>people</mat-icon>
-        </div>
-      </div>
-      <h3 class="stat-value">{{ totalCustomers }}</h3>
-      <p class="stat-label">Total Clientes</p>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-header">
-        <div class="stat-icon">
-          <mat-icon>euro</mat-icon>
-        </div>
-      </div>
-      <h3 class="stat-value">€{{ monthlyRevenue }}</h3>
-      <p class="stat-label">Faturação Mensal</p>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-header">
-        <div class="stat-icon">
-          <mat-icon>schedule</mat-icon>
-        </div>
-      </div>
-      <h3 class="stat-value">{{ pendingServices }}</h3>
-      <p class="stat-label">Serviços Pendentes</p>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-icon class="loading-spinner">hourglass_empty</mat-icon>
+    <p>A carregar dados...</p>
   </div>
 
-  <!-- Charts Grid -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">Marcações por Semana</h3>
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading">
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <mat-icon>event</mat-icon>
+          </div>
+        </div>
+        <h3 class="stat-value">{{ todayAppointments }}</h3>
+        <p class="stat-label">Marcações Hoje</p>
       </div>
-      <div class="chart-content">
-        <canvas baseChart
-                [data]="appointmentsChartData"
-                [options]="chartOptions">
-        </canvas>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <mat-icon>people</mat-icon>
+          </div>
+        </div>
+        <h3 class="stat-value">{{ totalCustomers }}</h3>
+        <p class="stat-label">Total Clientes</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <mat-icon>euro</mat-icon>
+          </div>
+        </div>
+        <h3 class="stat-value">€{{ monthlyRevenue.toFixed(2) }}</h3>
+        <p class="stat-label">Faturação Mensal</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">
+            <mat-icon>content_cut</mat-icon>
+          </div>
+        </div>
+        <h3 class="stat-value">{{ services.filter(s => s.active).length }}</h3>
+        <p class="stat-label">Serviços Ativos</p>
       </div>
     </div>
 
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">Serviços Mais Populares</h3>
+    <!-- Charts Grid -->
+    <div class="charts-grid" *ngIf="appointmentsChartData && servicesChartData">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Marcações Esta Semana</h3>
+        </div>
+        <div class="chart-content">
+          <canvas baseChart
+                  [data]="appointmentsChartData"
+                  [options]="chartOptions"
+                  type="line">
+          </canvas>
+        </div>
       </div>
-      <div class="chart-content">
-        <canvas baseChart
-                [data]="servicesChartData"
-                [options]="chartOptions">
-        </canvas>
-      </div>
-    </div>
-  </div>
 
-  <!-- Recent Appointments -->
-  <div class="recent-appointments">
-    <div class="appointments-header">
-      <h3 class="appointments-title">Marcações Recentes</h3>
-    </div>
-    <div class="appointments-list">
-      <div class="appointment-item" *ngFor="let appointment of getRecentAppointments()">
-        <div class="appointment-icon">
-          <mat-icon>event</mat-icon>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Serviços Mais Populares</h3>
         </div>
-        <div class="appointment-details">
-          <div class="appointment-customer">{{ appointment.customerName }}</div>
-          <div class="appointment-service">{{ appointment.serviceName }}</div>
-          <div class="appointment-time">{{ appointment.time }}</div>
-        </div>
-        <div class="appointment-status">
-          <mat-chip [color]="getStatusColor(appointment.status)" selected>
-            {{ appointment.status === 'CONFIRMED' ? 'Confirmado' : 
-               appointment.status === 'PENDING' ? 'Pendente' : 'Cancelado' }}
-          </mat-chip>
+        <div class="chart-content">
+          <canvas baseChart
+                  [data]="servicesChartData"
+                  [options]="chartOptions"
+                  type="doughnut">
+          </canvas>
         </div>
       </div>
-      
-      <div class="no-appointments" *ngIf="getRecentAppointments().length === 0">
-        <p>Nenhuma marcação para hoje</p>
+    </div>
+
+    <!-- Empty State for Charts -->
+    <div class="empty-state" *ngIf="!appointmentsChartData || !servicesChartData">
+      <mat-icon>insights</mat-icon>
+      <p>Sem dados suficientes para gráficos</p>
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="recent-appointments">
+      <div class="appointments-header">
+        <h3 class="appointments-title">Marcações de Hoje</h3>
+      </div>
+      <div class="appointments-list">
+        <div class="appointment-item" *ngFor="let appointment of getRecentAppointments()">
+          <div class="appointment-icon">
+            <mat-icon>event</mat-icon>
+          </div>
+          <div class="appointment-details">
+            <div class="appointment-customer">{{ appointment.customerName }}</div>
+            <div class="appointment-service">{{ appointment.serviceName }}</div>
+            <div class="appointment-time">{{ appointment.time }}</div>
+          </div>
+          <div class="appointment-status">
+            <mat-chip [color]="getStatusColor(appointment.status)" selected>
+              {{ appointment.status === 'CONFIRMED' ? 'Confirmado' : 
+                 appointment.status === 'PENDING' ? 'Pendente' : 
+                 appointment.status === 'COMPLETED' ? 'Completado' : 'Cancelado' }}
+            </mat-chip>
+          </div>
+        </div>
+        
+        <div class="no-appointments" *ngIf="getRecentAppointments().length === 0">
+          <mat-icon>event_busy</mat-icon>
+          <p>Nenhuma marcação para hoje</p>
+        </div>
       </div>
     </div>
   </div>

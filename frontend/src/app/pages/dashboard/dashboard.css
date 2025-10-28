@@ -185,6 +185,96 @@
   margin-left: var(--space-3);
 }
 
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  min-height: 400px;
+}
+
+.loading-spinner {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  color: #C3FF5A;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.loading-container p {
+  margin-top: var(--space-4);
+  color: #cbd4e6;
+  font-size: var(--font-size-lg);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-10);
+  background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
+  border: 1px solid #2a3042;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
+}
+
+.empty-state mat-icon {
+  font-size: 64px !important;
+  width: 64px !important;
+  height: 64px !important;
+  color: #a0a7b4;
+  opacity: 0.5;
+  margin-bottom: var(--space-4);
+}
+
+.empty-state p {
+  color: #cbd4e6;
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+/* No Appointments */
+.no-appointments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  background: #0f1117;
+  border: 1px dashed #2a3042;
+  border-radius: var(--radius-md);
+}
+
+.no-appointments mat-icon {
+  font-size: 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  color: #a0a7b4;
+  opacity: 0.5;
+  margin-bottom: var(--space-3);
+}
+
+.no-appointments p {
+  color: #cbd4e6;
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .stats-grid {
@@ -199,5 +289,10 @@
   
   .dashboard {
     padding: var(--space-4);
+  }
+  
+  .loading-container {
+    padding: var(--space-8);
+    min-height: 300px;
   }
 }
