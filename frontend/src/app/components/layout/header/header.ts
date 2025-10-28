@@ -7,7 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, Notification } from '../../services/api';
+import { ApiService, Notification } from '../../../services/api';
 import { Subscription } from 'rxjs';
 
 @Component({
