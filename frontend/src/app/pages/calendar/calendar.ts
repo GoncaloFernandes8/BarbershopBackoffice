@@ -66,21 +66,36 @@ export class CalendarComponent implements OnInit {
   }
 
   loadAppointments() {
-    if (!this.selectedBarber || this.selectedBarber === '') return;
+    console.log('loadAppointments called with selectedBarber:', this.selectedBarber);
+    
+    if (!this.selectedBarber || this.selectedBarber === '') {
+      console.log('No barber selected, returning');
+      return;
+    }
 
     const startOfMonthDate = startOfMonth(this.currentDate);
     const endOfMonthDate = endOfMonth(this.currentDate);
     
+    console.log('Date range:', startOfMonthDate.toISOString(), 'to', endOfMonthDate.toISOString());
+    
     // Se "Todos os barbeiros" está selecionado, carregar appointments de todos os barbeiros
     if (this.selectedBarber === 'all') {
+      console.log('Loading appointments for all barbers');
       this.loadAllBarbersAppointments(startOfMonthDate, endOfMonthDate);
     } else {
+      console.log('Loading appointments for specific barber:', this.selectedBarber);
       this.apiService.getAppointments(
         this.selectedBarber as number,
         startOfMonthDate.toISOString(),
         endOfMonthDate.toISOString()
-      ).subscribe(appointments => {
-        this.appointments = appointments;
+      ).subscribe({
+        next: (appointments) => {
+          console.log('Appointments loaded for specific barber:', appointments.length);
+          this.appointments = appointments;
+        },
+        error: (error) => {
+          console.error('Error loading appointments for specific barber:', error);
+        }
       });
     }
   }
@@ -90,23 +105,41 @@ export class CalendarComponent implements OnInit {
     const allAppointments: Appointment[] = [];
     let completedRequests = 0;
     
+    console.log('Loading appointments for all barbers:', this.barbers.length, 'barbers');
+    
     if (this.barbers.length === 0) {
+      console.log('No barbers available');
       this.appointments = [];
       return;
     }
 
     this.barbers.forEach(barber => {
+      console.log('Loading appointments for barber:', barber.name, barber.id);
       this.apiService.getAppointments(
         barber.id,
         startDate.toISOString(),
         endDate.toISOString()
-      ).subscribe(appointments => {
-        allAppointments.push(...appointments);
-        completedRequests++;
-        
-        // Quando todas as requisições terminarem, atualizar a lista
-        if (completedRequests === this.barbers.length) {
-          this.appointments = allAppointments;
+      ).subscribe({
+        next: (appointments) => {
+          console.log(`Appointments for ${barber.name}:`, appointments.length);
+          allAppointments.push(...appointments);
+          completedRequests++;
+          
+          // Quando todas as requisições terminarem, atualizar a lista
+          if (completedRequests === this.barbers.length) {
+            console.log('All appointments loaded:', allAppointments.length);
+            this.appointments = allAppointments;
+          }
+        },
+        error: (error) => {
+          console.error(`Error loading appointments for ${barber.name}:`, error);
+          completedRequests++;
+          
+          // Mesmo com erro, continuar o processo
+          if (completedRequests === this.barbers.length) {
+            console.log('All requests completed (with some errors):', allAppointments.length);
+            this.appointments = allAppointments;
+          }
         }
       });
     });
