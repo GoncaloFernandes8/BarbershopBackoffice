@@ -281,7 +281,22 @@ export class CreateAppointmentDialogComponent implements OnInit {
         error: (error) => {
           this.loading = false;
           console.error('Erro ao criar marcação:', error);
-          alert('Erro ao criar marcação. Tente novamente.');
+          
+          // Tratar erros específicos do backend
+          if (error.error && error.error.type) {
+            switch (error.error.type) {
+              case 'SLOT_CONFLICT':
+                alert('❌ ' + error.error.message);
+                break;
+              case 'TIME_OFF_CONFLICT':
+                alert('🏖️ ' + error.error.message);
+                break;
+              default:
+                alert('Erro ao criar marcação: ' + (error.error.message || 'Tente novamente.'));
+            }
+          } else {
+            alert('Erro ao criar marcação. Verifique sua conexão e tente novamente.');
+          }
         }
       });
     }
