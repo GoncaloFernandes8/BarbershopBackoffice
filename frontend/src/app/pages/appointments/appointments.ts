@@ -47,7 +47,7 @@ export class AppointmentsComponent implements OnInit {
   services: Service[] = [];
   clients: Client[] = [];
   
-  selectedBarber: number | null = null;
+  selectedBarber: number | null | string = null;
   selectedDate: Date = new Date();
   
   displayedColumns: string[] = ['date', 'time', 'client', 'service', 'barber', 'status', 'actions'];
@@ -63,35 +63,119 @@ export class AppointmentsComponent implements OnInit {
   }
 
   loadData() {
-    this.apiService.getBarbers().subscribe(barbers => {
-      this.barbers = barbers;
-      if (barbers.length > 0) {
-        this.selectedBarber = barbers[0].id;
+    this.apiService.getBarbers().subscribe({
+      next: (barbers) => {
+        console.log('Appointments - Barbers loaded:', barbers);
+        this.barbers = barbers;
+        // Definir "Todos os barbeiros" como padrão
+        this.selectedBarber = 'all';
+        console.log('Appointments - Selected barber set to:', this.selectedBarber);
         this.loadAppointments();
+      },
+      error: (error) => {
+        console.error('Appointments - Error loading barbers:', error);
       }
     });
 
-    this.apiService.getServices().subscribe(services => {
-      this.services = services;
+    this.apiService.getServices().subscribe({
+      next: (services) => {
+        console.log('Appointments - Services loaded:', services);
+        this.services = services;
+      },
+      error: (error) => {
+        console.error('Appointments - Error loading services:', error);
+      }
     });
 
-    this.apiService.getClients().subscribe(clients => {
-      this.clients = clients;
+    this.apiService.getClients().subscribe({
+      next: (clients) => {
+        console.log('Appointments - Clients loaded:', clients);
+        this.clients = clients;
+      },
+      error: (error) => {
+        console.error('Appointments - Error loading clients:', error);
+      }
     });
   }
 
   loadAppointments() {
-    if (!this.selectedBarber) return;
+    console.log('Appointments - loadAppointments called with selectedBarber:', this.selectedBarber);
+    
+    if (!this.selectedBarber || this.selectedBarber === '') {
+      console.log('Appointments - No barber selected, returning');
+      return;
+    }
 
     const startOfDayDate = startOfDay(this.selectedDate);
     const endOfDayDate = endOfDay(this.selectedDate);
     
-    this.apiService.getAppointments(
-      this.selectedBarber,
-      startOfDayDate.toISOString(),
-      endOfDayDate.toISOString()
-    ).subscribe(appointments => {
-      this.appointments = appointments;
+    console.log('Appointments - Date range:', startOfDayDate.toISOString(), 'to', endOfDayDate.toISOString());
+    
+    // Se "Todos os barbeiros" está selecionado, carregar appointments de todos os barbeiros
+    if (this.selectedBarber === 'all') {
+      console.log('Appointments - Loading appointments for all barbers');
+      this.loadAllBarbersAppointments(startOfDayDate, endOfDayDate);
+    } else {
+      console.log('Appointments - Loading appointments for specific barber:', this.selectedBarber);
+      const barberId = typeof this.selectedBarber === 'string' ? parseInt(this.selectedBarber) : this.selectedBarber;
+      this.apiService.getAppointments(
+        barberId,
+        startOfDayDate.toISOString(),
+        endOfDayDate.toISOString()
+      ).subscribe({
+        next: (appointments) => {
+          console.log('Appointments - Appointments loaded for specific barber:', appointments.length);
+          this.appointments = appointments;
+        },
+        error: (error) => {
+          console.error('Appointments - Error loading appointments for specific barber:', error);
+        }
+      });
+    }
+  }
+
+  loadAllBarbersAppointments(startDate: Date, endDate: Date) {
+    // Carregar appointments de todos os barbeiros
+    const allAppointments: Appointment[] = [];
+    let completedRequests = 0;
+    
+    console.log('Appointments - Loading appointments for all barbers:', this.barbers.length, 'barbers');
+    
+    if (this.barbers.length === 0) {
+      console.log('Appointments - No barbers available');
+      this.appointments = [];
+      return;
+    }
+
+    this.barbers.forEach(barber => {
+      console.log('Appointments - Loading appointments for barber:', barber.name, barber.id);
+      this.apiService.getAppointments(
+        barber.id,
+        startDate.toISOString(),
+        endDate.toISOString()
+      ).subscribe({
+        next: (appointments) => {
+          console.log(`Appointments - Appointments for ${barber.name}:`, appointments.length);
+          allAppointments.push(...appointments);
+          completedRequests++;
+          
+          // Quando todas as requisições terminarem, atualizar a lista
+          if (completedRequests === this.barbers.length) {
+            console.log('Appointments - All appointments loaded:', allAppointments.length);
+            this.appointments = allAppointments;
+          }
+        },
+        error: (error) => {
+          console.error(`Appointments - Error loading appointments for ${barber.name}:`, error);
+          completedRequests++;
+          
+          // Mesmo com erro, continuar o processo
+          if (completedRequests === this.barbers.length) {
+            console.log('Appointments - All requests completed (with some errors):', allAppointments.length);
+            this.appointments = allAppointments;
+          }
+        }
+      });
     });
   }
 
