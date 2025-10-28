@@ -97,8 +97,9 @@ export class CalendarComponent implements OnInit {
       this.loadAllBarbersAppointments(startOfMonthDate, endOfMonthDate);
     } else {
       console.log('Loading appointments for specific barber:', this.selectedBarber);
+      const barberId = typeof this.selectedBarber === 'string' ? parseInt(this.selectedBarber) : this.selectedBarber;
       this.apiService.getAppointments(
-        this.selectedBarber as number,
+        barberId,
         startOfMonthDate.toISOString(),
         endOfMonthDate.toISOString()
       ).subscribe({
