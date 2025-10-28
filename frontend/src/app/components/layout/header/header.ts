@@ -7,7 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NotificationService, Notification } from '../../../services/notifications';
+import { ApiService, Notification } from '../../services/api';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -48,25 +48,41 @@ export class HeaderComponent implements OnInit, OnDestroy {
     email: ''
   };
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit() {
-    // Subscrever às notificações
-    this.subscriptions.push(
-      this.notificationService.notifications$.subscribe((notifications: Notification[]) => {
-        this.notifications = notifications;
-      })
-    );
-
-    this.subscriptions.push(
-      this.notificationService.unreadCount$.subscribe((count: number) => {
-        this.notificationCount = count;
-      })
-    );
+    this.loadNotifications();
+    this.loadUnreadCount();
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  loadNotifications() {
+    this.subscriptions.push(
+      this.apiService.getNotifications().subscribe({
+        next: (notifications) => {
+          this.notifications = notifications;
+        },
+        error: (error) => {
+          console.error('Error loading notifications:', error);
+        }
+      })
+    );
+  }
+
+  loadUnreadCount() {
+    this.subscriptions.push(
+      this.apiService.getUnreadCount().subscribe({
+        next: (count) => {
+          this.notificationCount = count;
+        },
+        error: (error) => {
+          console.error('Error loading unread count:', error);
+        }
+      })
+    );
   }
 
   toggleSidebar() {
@@ -83,30 +99,68 @@ export class HeaderComponent implements OnInit, OnDestroy {
     
     this.isMarkingAsRead = true;
     
-    // Simular delay de API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    this.notificationService.markAllAsRead();
-    this.isMarkingAsRead = false;
-    this.markReadSuccess = true;
-    
-    // Reset success state after animation
-    setTimeout(() => {
-      this.markReadSuccess = false;
-    }, 2000);
+    this.subscriptions.push(
+      this.apiService.markAllNotificationsAsRead().subscribe({
+        next: (updatedCount) => {
+          this.notificationCount = 0;
+          this.isMarkingAsRead = false;
+          this.markReadSuccess = true;
+          
+          // Update notifications to mark them as read
+          this.notifications = this.notifications.map(n => ({ ...n, readStatus: true }));
+          
+          // Reset success state after animation
+          setTimeout(() => {
+            this.markReadSuccess = false;
+          }, 2000);
+        },
+        error: (error) => {
+          console.error('Error marking all as read:', error);
+          this.isMarkingAsRead = false;
+        }
+      })
+    );
   }
 
-  markNotificationAsRead(notificationId: string) {
-    this.notificationService.markAsRead(notificationId);
+  markNotificationAsRead(notificationId: number) {
+    this.subscriptions.push(
+      this.apiService.markNotificationAsRead(notificationId).subscribe({
+        next: () => {
+          // Update local state
+          this.notifications = this.notifications.map(n => 
+            n.id === notificationId ? { ...n, readStatus: true } : n
+          );
+          this.notificationCount = Math.max(0, this.notificationCount - 1);
+        },
+        error: (error) => {
+          console.error('Error marking notification as read:', error);
+        }
+      })
+    );
   }
 
-  deleteNotification(notificationId: string) {
-    this.notificationService.deleteNotification(notificationId);
+  deleteNotification(notificationId: number) {
+    this.subscriptions.push(
+      this.apiService.deleteNotification(notificationId).subscribe({
+        next: () => {
+          // Update local state
+          const notification = this.notifications.find(n => n.id === notificationId);
+          if (notification && !notification.readStatus) {
+            this.notificationCount = Math.max(0, this.notificationCount - 1);
+          }
+          this.notifications = this.notifications.filter(n => n.id !== notificationId);
+        },
+        error: (error) => {
+          console.error('Error deleting notification:', error);
+        }
+      })
+    );
   }
 
-  getRelativeTime(timestamp: Date): string {
+  getRelativeTime(timestamp: string): string {
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60));
+    const date = new Date(timestamp);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
     
     if (diffInMinutes < 1) return 'Agora mesmo';
     if (diffInMinutes < 60) return `Há ${diffInMinutes} min`;
@@ -117,10 +171,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) return `Há ${diffInDays} dias`;
     
-    return timestamp.toLocaleDateString('pt-PT');
+    return date.toLocaleDateString('pt-PT');
   }
 
-  trackByNotificationId(index: number, notification: Notification): string {
+  trackByNotificationId(index: number, notification: Notification): number {
     return notification.id;
   }
 
@@ -159,8 +213,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       // Simular envio de email
       console.log('Enviando email para definir password para:', this.newCustomer.email);
       
-      // Criar notificação de novo cliente
-      this.notificationService.notifyNewClient(this.newCustomer.name);
+      // Notificação será criada no backend
       
       // Fechar modal e mostrar sucesso
       this.closeAddCustomerModal();

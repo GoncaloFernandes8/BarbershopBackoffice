@@ -46,13 +46,13 @@
             <div 
               class="notification-item" 
               *ngFor="let notification of notifications; trackBy: trackByNotificationId"
-              [class.unread]="!notification.read"
+              [class.unread]="!notification.readStatus"
               (click)="markNotificationAsRead(notification.id)">
               <mat-icon class="notification-item-icon">{{ notification.icon }}</mat-icon>
               <div class="notification-content">
                 <p class="notification-text">{{ notification.title }}</p>
                 <p class="notification-message">{{ notification.message }}</p>
-                <span class="notification-time">{{ getRelativeTime(notification.timestamp) }}</span>
+                <span class="notification-time">{{ getRelativeTime(notification.createdAt) }}</span>
               </div>
               <button 
                 class="notification-delete" 

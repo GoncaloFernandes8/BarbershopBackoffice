@@ -89,6 +89,18 @@ export interface RecentAppointment {
   status: string;
 }
 
+export interface Notification {
+  id: number;
+  type: 'APPOINTMENT' | 'CLIENT' | 'SERVICE' | 'SYSTEM';
+  title: string;
+  message: string;
+  icon: string;
+  actionUrl?: string;
+  readStatus: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -246,5 +258,30 @@ export class ApiService {
   // Dashboard Statistics
   getDashboardStatistics(): Observable<DashboardStats> {
     return this.http.get<DashboardStats>(`${this.baseUrl}/dashboard/statistics`);
+  }
+
+  // Notifications
+  getNotifications(): Observable<Notification[]> {
+    return this.http.get<Notification[]>(`${this.baseUrl}/notifications`);
+  }
+
+  getUnreadNotifications(): Observable<Notification[]> {
+    return this.http.get<Notification[]>(`${this.baseUrl}/notifications/unread`);
+  }
+
+  getUnreadCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/notifications/unread/count`);
+  }
+
+  markNotificationAsRead(id: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/notifications/${id}/read`, {});
+  }
+
+  markAllNotificationsAsRead(): Observable<number> {
+    return this.http.put<number>(`${this.baseUrl}/notifications/read-all`, {});
+  }
+
+  deleteNotification(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/notifications/${id}`);
   }
 }
