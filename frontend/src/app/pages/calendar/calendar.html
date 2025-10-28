@@ -6,7 +6,7 @@
       <mat-form-field appearance="outline" class="barber-select">
         <mat-label>Barbeiro</mat-label>
         <mat-select [(value)]="selectedBarber" (selectionChange)="onBarberChange()">
-          <mat-option value="">Todos os barbeiros</mat-option>
+          <mat-option value="all">Todos os barbeiros</mat-option>
           <mat-option *ngFor="let barber of barbers" [value]="barber.id">
             {{ barber.name }}
           </mat-option>
@@ -84,6 +84,10 @@
         <div class="appointment-details">
           <div class="service-name">{{ getServiceName(appointment.serviceId) }}</div>
           <div class="client-name">{{ getClientName(appointment.clientId) }}</div>
+          <div class="barber-name" *ngIf="selectedBarber === 'all'">
+            <mat-icon>person</mat-icon>
+            {{ getBarberName(appointment.barberId) }}
+          </div>
           <div class="appointment-status">
             <mat-chip [class]="'status-' + getStatusColor(appointment.status)">
               {{ appointment.status }}

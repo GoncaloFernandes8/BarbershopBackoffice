@@ -461,6 +461,22 @@
   color: #cbd4e6;
 }
 
+.barber-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: #a0a7b4;
+  margin-top: var(--space-1);
+}
+
+.barber-name mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: #C3FF5A;
+}
+
 .appointment-status {
   margin-top: var(--space-2);
 }

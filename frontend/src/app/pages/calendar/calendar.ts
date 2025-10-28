@@ -33,7 +33,7 @@ import { ptBR } from 'date-fns/locale';
 export class CalendarComponent implements OnInit {
   currentDate = new Date();
   selectedDate: Date | null = null;
-  selectedBarber: number | null = null;
+  selectedBarber: number | null | string = null;
   
   barbers: Barber[] = [];
   services: Service[] = [];
@@ -55,10 +55,9 @@ export class CalendarComponent implements OnInit {
   loadData() {
     this.apiService.getBarbers().subscribe(barbers => {
       this.barbers = barbers;
-      if (barbers.length > 0) {
-        this.selectedBarber = barbers[0].id;
-        this.loadAppointments();
-      }
+      // Definir "Todos os barbeiros" como padrão
+      this.selectedBarber = 'all';
+      this.loadAppointments();
     });
 
     this.apiService.getServices().subscribe(services => {
@@ -67,17 +66,49 @@ export class CalendarComponent implements OnInit {
   }
 
   loadAppointments() {
-    if (!this.selectedBarber) return;
+    if (!this.selectedBarber || this.selectedBarber === '') return;
 
     const startOfMonthDate = startOfMonth(this.currentDate);
     const endOfMonthDate = endOfMonth(this.currentDate);
     
-    this.apiService.getAppointments(
-      this.selectedBarber,
-      startOfMonthDate.toISOString(),
-      endOfMonthDate.toISOString()
-    ).subscribe(appointments => {
-      this.appointments = appointments;
+    // Se "Todos os barbeiros" está selecionado, carregar appointments de todos os barbeiros
+    if (this.selectedBarber === 'all') {
+      this.loadAllBarbersAppointments(startOfMonthDate, endOfMonthDate);
+    } else {
+      this.apiService.getAppointments(
+        this.selectedBarber as number,
+        startOfMonthDate.toISOString(),
+        endOfMonthDate.toISOString()
+      ).subscribe(appointments => {
+        this.appointments = appointments;
+      });
+    }
+  }
+
+  loadAllBarbersAppointments(startDate: Date, endDate: Date) {
+    // Carregar appointments de todos os barbeiros
+    const allAppointments: Appointment[] = [];
+    let completedRequests = 0;
+    
+    if (this.barbers.length === 0) {
+      this.appointments = [];
+      return;
+    }
+
+    this.barbers.forEach(barber => {
+      this.apiService.getAppointments(
+        barber.id,
+        startDate.toISOString(),
+        endDate.toISOString()
+      ).subscribe(appointments => {
+        allAppointments.push(...appointments);
+        completedRequests++;
+        
+        // Quando todas as requisições terminarem, atualizar a lista
+        if (completedRequests === this.barbers.length) {
+          this.appointments = allAppointments;
+        }
+      });
     });
   }
 
@@ -183,6 +214,11 @@ export class CalendarComponent implements OnInit {
   getClientName(clientId: number): string {
     // Como não temos uma lista de clientes carregada, vamos usar um placeholder
     return `Cliente #${clientId}`;
+  }
+
+  getBarberName(barberId: number): string {
+    const barber = this.barbers.find(b => b.id === barberId);
+    return barber ? barber.name : 'Barbeiro não encontrado';
   }
 
   isSameMonth(date1: Date, date2: Date): boolean {
