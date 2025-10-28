@@ -7,6 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,6 +29,7 @@ import { ApiService, Service } from '../../services/api';
     MatChipsModule,
     MatDialogModule,
     MatMenuModule,
+    MatDividerModule,
     MatSnackBarModule,
     MatFormFieldModule,
     MatInputModule,
