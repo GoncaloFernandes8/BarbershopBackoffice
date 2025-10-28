@@ -94,10 +94,10 @@ export class DashboardComponent implements OnInit {
 
   getStatusColor(status: string): string {
     switch (status) {
-      case 'CONFIRMED': return 'primary';
-      case 'PENDING': return 'accent';
+      case 'SCHEDULED': return 'primary';
       case 'CANCELLED': return 'warn';
       case 'COMPLETED': return 'primary';
+      case 'NO_SHOW': return 'accent';
       default: return 'primary';
     }
   }

@@ -202,6 +202,10 @@ export class ApiService {
     return this.http.delete<void>(`${this.baseUrl}/services/${id}`);
   }
 
+  permanentlyDeleteService(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/services/${id}/permanent`);
+  }
+
   // Working Hours
   getWorkingHours(barberId: number): Observable<WorkingHours[]> {
     return this.http.get<WorkingHours[]>(`${this.baseUrl}/working-hours?barberId=${barberId}`);

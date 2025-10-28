@@ -128,6 +128,19 @@
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
+/* Menu Actions */
+::ng-deep .delete-permanent {
+  color: #f44336 !important;
+}
+
+::ng-deep .delete-permanent:hover {
+  background: rgba(244, 67, 54, 0.1) !important;
+}
+
+::ng-deep .delete-permanent span {
+  color: #f44336 !important;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .services-table-card {

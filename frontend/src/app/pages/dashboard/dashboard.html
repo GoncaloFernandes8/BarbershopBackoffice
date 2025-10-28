@@ -104,9 +104,9 @@
           </div>
           <div class="appointment-status">
             <mat-chip [color]="getStatusColor(appointment.status)" selected>
-              {{ appointment.status === 'CONFIRMED' ? 'Confirmado' : 
-                 appointment.status === 'PENDING' ? 'Pendente' : 
-                 appointment.status === 'COMPLETED' ? 'Completado' : 'Cancelado' }}
+              {{ appointment.status === 'SCHEDULED' ? 'Agendado' : 
+                 appointment.status === 'COMPLETED' ? 'Completado' : 
+                 appointment.status === 'NO_SHOW' ? 'Faltou' : 'Cancelado' }}
             </mat-chip>
           </div>
         </div>

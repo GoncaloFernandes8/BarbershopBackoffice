@@ -70,10 +70,14 @@
                 <mat-icon>edit</mat-icon>
                 <span>Editar</span>
               </button>
-              <button mat-menu-item (click)="deleteService(service)" 
-                      *ngIf="service.active">
-                <mat-icon>delete</mat-icon>
-                <span>Desativar</span>
+              <button mat-menu-item (click)="toggleActiveService(service)">
+                <mat-icon>{{ service.active ? 'visibility_off' : 'visibility' }}</mat-icon>
+                <span>{{ service.active ? 'Desativar' : 'Ativar' }}</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="permanentlyDeleteService(service)" class="delete-permanent">
+                <mat-icon color="warn">delete_forever</mat-icon>
+                <span>Eliminar permanentemente</span>
               </button>
             </mat-menu>
           </td>

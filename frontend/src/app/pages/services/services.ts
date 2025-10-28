@@ -98,16 +98,53 @@ export class ServicesComponent implements OnInit {
     });
   }
 
-  deleteService(service: Service) {
-    if (confirm(`Tem certeza que deseja desativar o serviço "${service.name}"?`)) {
-      this.apiService.deleteService(service.id).subscribe({
+  toggleActiveService(service: Service) {
+    const action = service.active ? 'desativar' : 'ativar';
+    if (confirm(`Tem certeza que deseja ${action} o serviço "${service.name}"?`)) {
+      if (service.active) {
+        // Desativar (soft delete)
+        this.apiService.deleteService(service.id).subscribe({
+          next: () => {
+            this.snackBar.open('Serviço desativado com sucesso', 'Fechar', { duration: 3000 });
+            this.loadServices();
+          },
+          error: (error) => {
+            console.error('Erro ao desativar serviço:', error);
+            this.snackBar.open('Erro ao desativar serviço', 'Fechar', { duration: 3000 });
+          }
+        });
+      } else {
+        // Reativar (atualizar active = true)
+        this.apiService.updateService(service.id, { 
+          name: service.name,
+          durationMin: service.durationMin,
+          bufferAfterMin: service.bufferAfterMin,
+          priceCents: service.priceCents,
+          active: true 
+        }).subscribe({
+          next: () => {
+            this.snackBar.open('Serviço reativado com sucesso', 'Fechar', { duration: 3000 });
+            this.loadServices();
+          },
+          error: (error) => {
+            console.error('Erro ao reativar serviço:', error);
+            this.snackBar.open('Erro ao reativar serviço', 'Fechar', { duration: 3000 });
+          }
+        });
+      }
+    }
+  }
+
+  permanentlyDeleteService(service: Service) {
+    if (confirm(`⚠️ ATENÇÃO: Tem certeza que deseja ELIMINAR PERMANENTEMENTE o serviço "${service.name}"?\n\nEsta ação NÃO pode ser desfeita!`)) {
+      this.apiService.permanentlyDeleteService(service.id).subscribe({
         next: () => {
-          this.snackBar.open('Serviço desativado com sucesso', 'Fechar', { duration: 3000 });
+          this.snackBar.open('Serviço eliminado permanentemente', 'Fechar', { duration: 3000 });
           this.loadServices();
         },
         error: (error) => {
-          console.error('Erro ao desativar serviço:', error);
-          this.snackBar.open('Erro ao desativar serviço', 'Fechar', { duration: 3000 });
+          console.error('Erro ao eliminar serviço:', error);
+          this.snackBar.open('Erro ao eliminar serviço', 'Fechar', { duration: 3000 });
         }
       });
     }
