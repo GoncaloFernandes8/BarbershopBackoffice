@@ -53,15 +53,28 @@ export class CalendarComponent implements OnInit {
   }
 
   loadData() {
-    this.apiService.getBarbers().subscribe(barbers => {
-      this.barbers = barbers;
-      // Definir "Todos os barbeiros" como padrão
-      this.selectedBarber = 'all';
-      this.loadAppointments();
+    this.apiService.getBarbers().subscribe({
+      next: (barbers) => {
+        console.log('Barbers loaded:', barbers);
+        this.barbers = barbers;
+        // Definir "Todos os barbeiros" como padrão
+        this.selectedBarber = 'all';
+        console.log('Selected barber set to:', this.selectedBarber);
+        this.loadAppointments();
+      },
+      error: (error) => {
+        console.error('Error loading barbers:', error);
+      }
     });
 
-    this.apiService.getServices().subscribe(services => {
-      this.services = services;
+    this.apiService.getServices().subscribe({
+      next: (services) => {
+        console.log('Services loaded:', services);
+        this.services = services;
+      },
+      error: (error) => {
+        console.error('Error loading services:', error);
+      }
     });
   }
 
