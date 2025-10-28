@@ -60,6 +60,35 @@ export interface CreateAppointmentRequest {
   notes?: string;
 }
 
+export interface DashboardStats {
+  todayAppointments: number;
+  totalClients: number;
+  monthlyRevenue: number;
+  activeServices: number;
+  totalAppointments: number;
+  weekStats: WeekDayStats[];
+  popularServices: ServicePopularity[];
+  recentAppointments: RecentAppointment[];
+}
+
+export interface WeekDayStats {
+  day: string;
+  appointments: number;
+}
+
+export interface ServicePopularity {
+  serviceName: string;
+  count: number;
+  revenue: number;
+}
+
+export interface RecentAppointment {
+  clientName: string;
+  serviceName: string;
+  time: string;
+  status: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -208,5 +237,10 @@ export class ApiService {
   // Update Appointment
   updateAppointment(id: string, appointment: Partial<CreateAppointmentRequest>): Observable<Appointment> {
     return this.http.put<Appointment>(`${this.baseUrl}/appointments/${id}`, appointment);
+  }
+
+  // Dashboard Statistics
+  getDashboardStatistics(): Observable<DashboardStats> {
+    return this.http.get<DashboardStats>(`${this.baseUrl}/dashboard/statistics`);
   }
 }
