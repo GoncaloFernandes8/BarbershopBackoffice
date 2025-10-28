@@ -9,8 +9,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ApiService, CreateAppointmentRequest, Client, Service, WorkingHours } from '../../../services/api';
-import { format, addHours } from 'date-fns';
+import { ApiService, CreateAppointmentRequest, Client, Service, WorkingHours, TimeOff } from '../../../services/api';
+import { format, addHours, isWithinInterval, parseISO } from 'date-fns';
 
 export interface CreateAppointmentDialogData {
   date: Date;
@@ -71,7 +71,11 @@ export interface CreateAppointmentDialogData {
 
           <mat-form-field appearance="outline" class="time-field">
             <mat-label>Hora</mat-label>
-            <input matInput type="time" formControlName="time" required>
+            <mat-select formControlName="time" required>
+              <mat-option *ngFor="let slot of timeSlots" [value]="slot">
+                {{ slot }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
@@ -149,6 +153,8 @@ export class CreateAppointmentDialogComponent implements OnInit {
   appointmentForm: FormGroup;
   clients: Client[] = [];
   workingHours: WorkingHours[] = [];
+  timeOffPeriods: TimeOff[] = [];
+  timeSlots: string[] = [];
   loading = false;
 
   constructor(
@@ -176,6 +182,20 @@ export class CreateAppointmentDialogComponent implements OnInit {
   ngOnInit() {
     this.loadClients();
     this.loadWorkingHours();
+    this.loadTimeOff();
+    this.generateTimeSlots();
+  }
+  
+  generateTimeSlots() {
+    // Gerar slots de 15 em 15 minutos das 00:00 às 23:45
+    this.timeSlots = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const hourStr = hour.toString().padStart(2, '0');
+        const minuteStr = minute.toString().padStart(2, '0');
+        this.timeSlots.push(`${hourStr}:${minuteStr}`);
+      }
+    }
   }
 
   loadClients() {
@@ -187,6 +207,21 @@ export class CreateAppointmentDialogComponent implements OnInit {
   loadWorkingHours() {
     this.apiService.getWorkingHours(this.data.barberId).subscribe(workingHours => {
       this.workingHours = workingHours;
+    });
+  }
+  
+  loadTimeOff() {
+    // Carregar folgas do barbeiro para o mês selecionado
+    const date = this.data.date;
+    const startOfMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonthDate = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59);
+    
+    this.apiService.getTimeOff(
+      this.data.barberId,
+      startOfMonthDate.toISOString(),
+      endOfMonthDate.toISOString()
+    ).subscribe(timeOff => {
+      this.timeOffPeriods = timeOff;
     });
   }
 
@@ -218,6 +253,13 @@ export class CreateAppointmentDialogComponent implements OnInit {
       // Validar se está dentro do horário de funcionamento
       if (!this.isWithinWorkingHours(startsAt)) {
         alert('A marcação deve ser feita dentro do horário de funcionamento do barbeiro.');
+        this.loading = false;
+        return;
+      }
+      
+      // Validar se o barbeiro não está de folga
+      if (this.isOnTimeOff(startsAt, endsAt)) {
+        alert('O barbeiro está de folga neste período. Escolha outra data/hora.');
         this.loading = false;
         return;
       }
@@ -263,6 +305,21 @@ export class CreateAppointmentDialogComponent implements OnInit {
     
     // Verificar se o horário está dentro do intervalo
     return timeStr >= dayWorkingHours.startTime && timeStr <= dayWorkingHours.endTime;
+  }
+  
+  isOnTimeOff(startsAt: Date, endsAt: Date): boolean {
+    // Verificar se a marcação está dentro de algum período de folga
+    return this.timeOffPeriods.some(timeOff => {
+      const timeOffStart = parseISO(timeOff.startsAt);
+      const timeOffEnd = parseISO(timeOff.endsAt);
+      
+      // Verificar se há sobreposição entre a marcação e a folga
+      return (
+        (startsAt >= timeOffStart && startsAt < timeOffEnd) ||
+        (endsAt > timeOffStart && endsAt <= timeOffEnd) ||
+        (startsAt <= timeOffStart && endsAt >= timeOffEnd)
+      );
+    });
   }
 
   onCancel() {
