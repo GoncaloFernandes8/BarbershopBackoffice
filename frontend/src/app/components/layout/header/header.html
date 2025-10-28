@@ -43,19 +43,27 @@
           </div>
           <mat-divider></mat-divider>
           <div class="notification-list">
-            <div class="notification-item">
-              <mat-icon class="notification-item-icon">event</mat-icon>
+            <div 
+              class="notification-item" 
+              *ngFor="let notification of notifications; trackBy: trackByNotificationId"
+              [class.unread]="!notification.read"
+              (click)="markNotificationAsRead(notification.id)">
+              <mat-icon class="notification-item-icon">{{ notification.icon }}</mat-icon>
               <div class="notification-content">
-                <p class="notification-text">Nova marcação agendada</p>
-                <span class="notification-time">Há 5 minutos</span>
+                <p class="notification-text">{{ notification.title }}</p>
+                <p class="notification-message">{{ notification.message }}</p>
+                <span class="notification-time">{{ getRelativeTime(notification.timestamp) }}</span>
               </div>
+              <button 
+                class="notification-delete" 
+                (click)="deleteNotification(notification.id); $event.stopPropagation()"
+                mat-icon-button>
+                <mat-icon>close</mat-icon>
+              </button>
             </div>
-            <div class="notification-item">
-              <mat-icon class="notification-item-icon">person_add</mat-icon>
-              <div class="notification-content">
-                <p class="notification-text">Novo cliente cadastrado</p>
-                <span class="notification-time">Há 1 hora</span>
-              </div>
+            <div class="no-notifications" *ngIf="notifications.length === 0">
+              <mat-icon>notifications_none</mat-icon>
+              <p>Nenhuma notificação</p>
             </div>
           </div>
         </mat-menu>
