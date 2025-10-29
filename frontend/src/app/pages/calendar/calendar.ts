@@ -34,10 +34,12 @@ export class CalendarComponent implements OnInit {
   currentDate = new Date();
   selectedDate: Date | null = null;
   selectedBarber: number | null | string = null;
+  statusFilter: 'all' | 'active' | 'cancelled' = 'all';
   
   barbers: Barber[] = [];
   services: Service[] = [];
   appointments: Appointment[] = [];
+  filteredAppointments: Appointment[] = [];
   
   calendarDays: Date[] = [];
   weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -113,6 +115,7 @@ export class CalendarComponent implements OnInit {
         next: (appointments) => {
           console.log('Appointments loaded for specific barber:', appointments.length);
           this.appointments = appointments;
+          this.applyStatusFilter();
         },
         error: (error) => {
           console.error('Error loading appointments for specific barber:', error);
@@ -150,6 +153,7 @@ export class CalendarComponent implements OnInit {
           if (completedRequests === this.barbers.length) {
             console.log('All appointments loaded:', allAppointments.length);
             this.appointments = allAppointments;
+            this.applyStatusFilter();
           }
         },
         error: (error) => {
@@ -160,6 +164,7 @@ export class CalendarComponent implements OnInit {
           if (completedRequests === this.barbers.length) {
             console.log('All requests completed (with some errors):', allAppointments.length);
             this.appointments = allAppointments;
+            this.applyStatusFilter();
           }
         }
       });
@@ -233,7 +238,7 @@ export class CalendarComponent implements OnInit {
   }
 
   getAppointmentsForDate(date: Date): Appointment[] {
-    return this.appointments.filter(appointment => {
+    return this.filteredAppointments.filter(appointment => {
       const appointmentDate = new Date(appointment.startsAt);
       return isSameDay(appointmentDate, date);
     });
@@ -326,6 +331,7 @@ export class CalendarComponent implements OnInit {
       ).subscribe({
         next: (appointments) => {
           this.appointments = appointments;
+          this.applyStatusFilter();
         },
         error: (error) => {
           console.error('Error loading day appointments:', error);
@@ -355,6 +361,7 @@ export class CalendarComponent implements OnInit {
           
           if (completedRequests === this.barbers.length) {
             this.appointments = allAppointments;
+            this.applyStatusFilter();
           }
         },
         error: (error) => {
@@ -363,6 +370,7 @@ export class CalendarComponent implements OnInit {
           
           if (completedRequests === this.barbers.length) {
             this.appointments = allAppointments;
+            this.applyStatusFilter();
           }
         }
       });
@@ -370,7 +378,7 @@ export class CalendarComponent implements OnInit {
   }
 
   getAppointmentsForHour(hour: number): Appointment[] {
-    return this.appointments.filter(appointment => {
+    return this.filteredAppointments.filter(appointment => {
       const appointmentDate = new Date(appointment.startsAt);
       return appointmentDate.getHours() === hour;
     }).sort((a, b) => {
@@ -379,6 +387,26 @@ export class CalendarComponent implements OnInit {
       const bMinutes = new Date(b.startsAt).getMinutes();
       return aMinutes - bMinutes;
     });
+  }
+
+  onStatusFilterChange() {
+    this.applyStatusFilter();
+  }
+
+  applyStatusFilter() {
+    if (this.statusFilter === 'all') {
+      this.filteredAppointments = [...this.appointments];
+    } else if (this.statusFilter === 'active') {
+      // Marcações ativas = não canceladas
+      this.filteredAppointments = this.appointments.filter(
+        appointment => appointment.status !== 'CANCELLED'
+      );
+    } else if (this.statusFilter === 'cancelled') {
+      // Apenas marcações canceladas
+      this.filteredAppointments = this.appointments.filter(
+        appointment => appointment.status === 'CANCELLED'
+      );
+    }
   }
 
   getDayViewDateFormatted(): string {
