@@ -121,6 +121,11 @@ export class CustomersComponent implements OnInit {
 
     <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
       <div mat-dialog-content class="dialog-content">
+        <div class="info-message">
+          <mat-icon>info</mat-icon>
+          <p>O cliente receberá um email para definir a sua senha.</p>
+        </div>
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Nome</mat-label>
           <input matInput formControlName="name" required>
@@ -134,11 +139,6 @@ export class CustomersComponent implements OnInit {
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email" required>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Senha</mat-label>
-          <input matInput type="password" formControlName="password" required>
         </mat-form-field>
       </div>
 
@@ -163,6 +163,26 @@ export class CustomersComponent implements OnInit {
       flex-direction: column;
       gap: 16px;
     }
+    .info-message {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(195, 255, 90, 0.1);
+      border: 1px solid rgba(195, 255, 90, 0.3);
+      border-radius: 8px;
+      color: #C3FF5A;
+    }
+    .info-message mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+    .info-message p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
     .full-width {
       width: 100%;
     }
@@ -186,8 +206,7 @@ export class CreateClientDialogComponent {
     this.clientForm = this.fb.group({
       name: ['', Validators.required],
       phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
@@ -200,7 +219,7 @@ export class CreateClientDialogComponent {
       this.apiService.createClient(clientData).subscribe({
         next: (client) => {
           this.loading = false;
-          this.snackBar.open('Cliente criado com sucesso', 'Fechar', { duration: 3000 });
+          this.snackBar.open('Cliente criado! Email de definição de senha enviado.', 'Fechar', { duration: 5000 });
           this.dialogRef.close(client);
         },
         error: (error) => {
