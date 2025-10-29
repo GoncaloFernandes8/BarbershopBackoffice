@@ -187,6 +187,51 @@
   height: 18px;
 }
 
+.view-toggle-button {
+  background: rgba(195, 255, 90, 0.1);
+  border: 1px solid rgba(195, 255, 90, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: #C3FF5A;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 2px 4px rgba(195, 255, 90, 0.1);
+  min-height: 40px;
+}
+
+.view-toggle-button:hover {
+  background: rgba(195, 255, 90, 0.2);
+  border-color: #C3FF5A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(195, 255, 90, 0.2);
+}
+
+.view-toggle-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.day-navigation {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.day-navigation h2 {
+  margin: 0;
+  min-width: 300px;
+  text-align: center;
+  color: #e9eef7;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
 .calendar-container {
   background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
   border: 1px solid #2a3042;
@@ -533,6 +578,169 @@
   height: 16px;
 }
 
+/* Vista Diária */
+.day-view-container {
+  background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
+  border: 1px solid #2a3042;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  padding: var(--space-4);
+}
+
+.day-view-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeline-hour {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  min-height: 80px;
+  border-bottom: 1px solid #2a3042;
+  position: relative;
+}
+
+.timeline-hour:last-child {
+  border-bottom: none;
+}
+
+.hour-label {
+  padding: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  color: #cbd4e6;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: rgba(195, 255, 90, 0.05);
+  border-right: 2px solid #2a3042;
+}
+
+.hour-content {
+  position: relative;
+  padding: var(--space-2);
+  background: #16181d;
+}
+
+.hour-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(195, 255, 90, 0.1);
+}
+
+.day-appointment {
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  background: rgba(195, 255, 90, 0.15);
+  border: 1px solid rgba(195, 255, 90, 0.3);
+  border-left: 4px solid #C3FF5A;
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px 8px rgba(195, 255, 90, 0.15);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.day-appointment:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(195, 255, 90, 0.25);
+  background: rgba(195, 255, 90, 0.25);
+  z-index: 2;
+}
+
+/* Status-specific day appointments */
+.day-appointment.status-primary {
+  background: rgba(33, 150, 243, 0.15);
+  border-color: rgba(33, 150, 243, 0.3);
+  border-left-color: #2196f3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+}
+
+.day-appointment.status-primary:hover {
+  background: rgba(33, 150, 243, 0.25);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
+}
+
+.day-appointment.status-accent {
+  background: rgba(255, 152, 0, 0.15);
+  border-color: rgba(255, 152, 0, 0.3);
+  border-left-color: #ff9800;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
+}
+
+.day-appointment.status-accent:hover {
+  background: rgba(255, 152, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25);
+}
+
+.day-appointment.status-warn {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  border-left-color: #ef4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+}
+
+.day-appointment.status-warn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.day-appointment.status-success {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  border-left-color: #10b981;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.day-appointment.status-success:hover {
+  background: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.appointment-time-range {
+  font-weight: var(--font-weight-bold);
+  color: #C3FF5A;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-1);
+}
+
+.appointment-service {
+  font-weight: var(--font-weight-semibold);
+  color: #e9eef7;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-1);
+}
+
+.appointment-client {
+  font-size: var(--font-size-sm);
+  color: #cbd4e6;
+  margin-bottom: var(--space-1);
+}
+
+.appointment-barber {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: #a0a7b4;
+  margin-top: var(--space-1);
+}
+
+.appointment-barber mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: #C3FF5A;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .selected-date-panel {
@@ -550,6 +758,35 @@
   
   .calendar-day {
     min-height: 100px;
+  }
+
+  .day-view-container {
+    padding: var(--space-2);
+  }
+
+  .timeline-hour {
+    grid-template-columns: 60px 1fr;
+    min-height: 70px;
+  }
+
+  .hour-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .day-appointment {
+    padding: var(--space-2);
+  }
+
+  .appointment-time-range {
+    font-size: var(--font-size-xs);
+  }
+
+  .appointment-service {
+    font-size: var(--font-size-sm);
+  }
+
+  .appointment-client {
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -617,6 +854,16 @@
     padding: var(--space-2);
     font-size: var(--font-size-xs);
   }
+
+  .day-navigation h2 {
+    min-width: 200px;
+    font-size: var(--font-size-base);
+  }
+
+  .view-toggle-button {
+    font-size: var(--font-size-xs);
+    padding: var(--space-2) var(--space-3);
+  }
 }
 
 @media (max-width: 480px) {
@@ -667,5 +914,40 @@
   .new-appointment-button {
     padding: var(--space-2) var(--space-3);
     font-size: var(--font-size-sm);
+  }
+
+  .day-navigation h2 {
+    min-width: 150px;
+    font-size: var(--font-size-sm);
+  }
+
+  .timeline-hour {
+    grid-template-columns: 50px 1fr;
+    min-height: 60px;
+  }
+
+  .hour-label {
+    font-size: 10px;
+    padding: var(--space-1);
+  }
+
+  .day-appointment {
+    padding: var(--space-1);
+  }
+
+  .appointment-time-range {
+    font-size: 10px;
+  }
+
+  .appointment-service {
+    font-size: var(--font-size-xs);
+  }
+
+  .appointment-client {
+    font-size: 10px;
+  }
+
+  .appointment-barber {
+    font-size: 9px;
   }
 }

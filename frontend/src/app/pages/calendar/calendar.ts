@@ -10,7 +10,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ApiService, Appointment, Barber, Service } from '../../services/api';
 import { CreateAppointmentDialogComponent } from './create-appointment-dialog/create-appointment-dialog.component';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addDays, subDays, startOfDay, endOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 @Component({
@@ -41,6 +41,13 @@ export class CalendarComponent implements OnInit {
   
   calendarDays: Date[] = [];
   weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  
+  // Nova propriedade para controlar a vista
+  viewMode: 'month' | 'day' = 'month';
+  
+  // Propriedades para a vista diária
+  dayViewDate: Date = new Date();
+  dayViewHours: number[] = Array.from({ length: 13 }, (_, i) => i + 8); // 8h às 20h
 
   constructor(
     private apiService: ApiService,
@@ -180,7 +187,11 @@ export class CalendarComponent implements OnInit {
   }
 
   onBarberChange() {
-    this.loadAppointments();
+    if (this.viewMode === 'month') {
+      this.loadAppointments();
+    } else {
+      this.loadDayViewAppointments();
+    }
   }
 
   onDateClick(date: Date) {
@@ -274,5 +285,120 @@ export class CalendarComponent implements OnInit {
 
   format(date: Date, formatStr: string): string {
     return format(date, formatStr);
+  }
+
+  // Métodos para a vista diária
+  toggleViewMode() {
+    this.viewMode = this.viewMode === 'month' ? 'day' : 'month';
+    if (this.viewMode === 'day') {
+      // Ao mudar para vista diária, usar a data selecionada ou hoje
+      this.dayViewDate = this.selectedDate || new Date();
+      this.loadDayViewAppointments();
+    }
+  }
+
+  onPreviousDay() {
+    this.dayViewDate = subDays(this.dayViewDate, 1);
+    this.loadDayViewAppointments();
+  }
+
+  onNextDay() {
+    this.dayViewDate = addDays(this.dayViewDate, 1);
+    this.loadDayViewAppointments();
+  }
+
+  loadDayViewAppointments() {
+    if (!this.selectedBarber || this.selectedBarber === '') {
+      return;
+    }
+
+    const startOfDayDate = startOfDay(this.dayViewDate);
+    const endOfDayDate = endOfDay(this.dayViewDate);
+
+    if (this.selectedBarber === 'all') {
+      this.loadAllBarbersDayAppointments(startOfDayDate, endOfDayDate);
+    } else {
+      const barberId = typeof this.selectedBarber === 'string' ? parseInt(this.selectedBarber) : this.selectedBarber;
+      this.apiService.getAppointments(
+        barberId,
+        startOfDayDate.toISOString(),
+        endOfDayDate.toISOString()
+      ).subscribe({
+        next: (appointments) => {
+          this.appointments = appointments;
+        },
+        error: (error) => {
+          console.error('Error loading day appointments:', error);
+        }
+      });
+    }
+  }
+
+  loadAllBarbersDayAppointments(startDate: Date, endDate: Date) {
+    const allAppointments: Appointment[] = [];
+    let completedRequests = 0;
+
+    if (this.barbers.length === 0) {
+      this.appointments = [];
+      return;
+    }
+
+    this.barbers.forEach(barber => {
+      this.apiService.getAppointments(
+        barber.id,
+        startDate.toISOString(),
+        endDate.toISOString()
+      ).subscribe({
+        next: (appointments) => {
+          allAppointments.push(...appointments);
+          completedRequests++;
+          
+          if (completedRequests === this.barbers.length) {
+            this.appointments = allAppointments;
+          }
+        },
+        error: (error) => {
+          console.error(`Error loading day appointments for ${barber.name}:`, error);
+          completedRequests++;
+          
+          if (completedRequests === this.barbers.length) {
+            this.appointments = allAppointments;
+          }
+        }
+      });
+    });
+  }
+
+  getAppointmentsForHour(hour: number): Appointment[] {
+    return this.appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.startsAt);
+      return appointmentDate.getHours() === hour;
+    }).sort((a, b) => {
+      // Ordenar por minuto
+      const aMinutes = new Date(a.startsAt).getMinutes();
+      const bMinutes = new Date(b.startsAt).getMinutes();
+      return aMinutes - bMinutes;
+    });
+  }
+
+  getDayViewDateFormatted(): string {
+    return format(this.dayViewDate, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+  }
+
+  getAppointmentDuration(appointment: Appointment): number {
+    const start = new Date(appointment.startsAt);
+    const end = new Date(appointment.endsAt);
+    return (end.getTime() - start.getTime()) / (1000 * 60); // Duração em minutos
+  }
+
+  getAppointmentTopPosition(appointment: Appointment): number {
+    const start = new Date(appointment.startsAt);
+    const minutes = start.getMinutes();
+    return (minutes / 60) * 100; // Percentagem dentro da hora
+  }
+
+  getAppointmentHeight(appointment: Appointment): number {
+    const duration = this.getAppointmentDuration(appointment);
+    return (duration / 60) * 100; // Percentagem da altura (1 hora = 100%)
   }
 }

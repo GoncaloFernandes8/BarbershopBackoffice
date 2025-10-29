@@ -13,7 +13,14 @@
         </mat-select>
       </mat-form-field>
 
-      <div class="month-navigation">
+      <!-- Botão para alternar entre vistas -->
+      <button mat-raised-button (click)="toggleViewMode()" class="view-toggle-button">
+        <mat-icon>{{ viewMode === 'month' ? 'calendar_view_day' : 'calendar_view_month' }}</mat-icon>
+        {{ viewMode === 'month' ? 'Vista Diária' : 'Vista Mensal' }}
+      </button>
+
+      <!-- Navegação para vista mensal -->
+      <div class="month-navigation" *ngIf="viewMode === 'month'">
         <button mat-icon-button (click)="onPreviousMonth()">
           <mat-icon>chevron_left</mat-icon>
         </button>
@@ -23,14 +30,26 @@
         </button>
       </div>
 
-      <button mat-raised-button color="primary" (click)="onCreateAppointment()" [disabled]="!selectedDate" class="new-appointment-button">
+      <!-- Navegação para vista diária -->
+      <div class="day-navigation" *ngIf="viewMode === 'day'">
+        <button mat-icon-button (click)="onPreviousDay()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <h2>{{ getDayViewDateFormatted() }}</h2>
+        <button mat-icon-button (click)="onNextDay()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <button mat-raised-button color="primary" (click)="onCreateAppointment()" [disabled]="!selectedDate && viewMode === 'month'" class="new-appointment-button">
         <mat-icon>add</mat-icon>
         Nova Marcação
       </button>
     </div>
   </div>
 
-  <div class="calendar-container">
+  <!-- Vista Mensal -->
+  <div class="calendar-container" *ngIf="viewMode === 'month'">
     <div class="calendar-grid">
       <!-- Cabeçalho dos dias da semana -->
       <div class="weekday-header" *ngFor="let day of weekDays">
@@ -58,6 +77,44 @@
           >
             <span class="time">{{ formatTime(appointment.startsAt) }}</span>
             <span class="service">{{ getServiceName(appointment.serviceId) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista Diária -->
+  <div class="day-view-container" *ngIf="viewMode === 'day'">
+    <div class="day-view-timeline">
+      <div class="timeline-hour" *ngFor="let hour of dayViewHours">
+        <div class="hour-label">
+          {{ hour }}:00
+        </div>
+        <div class="hour-content">
+          <div class="hour-line"></div>
+          
+          <!-- Marcações nesta hora -->
+          <div 
+            class="day-appointment"
+            *ngFor="let appointment of getAppointmentsForHour(hour)"
+            [class]="'status-' + getStatusColor(appointment.status)"
+            [style.top.%]="getAppointmentTopPosition(appointment)"
+            [style.height.%]="getAppointmentHeight(appointment)"
+            [title]="appointment.notes || ''"
+          >
+            <div class="appointment-time-range">
+              {{ formatTime(appointment.startsAt) }} - {{ formatTime(appointment.endsAt) }}
+            </div>
+            <div class="appointment-service">
+              {{ getServiceName(appointment.serviceId) }}
+            </div>
+            <div class="appointment-client">
+              {{ getClientName(appointment.clientId) }}
+            </div>
+            <div class="appointment-barber" *ngIf="selectedBarber === 'all'">
+              <mat-icon>person</mat-icon>
+              {{ getBarberName(appointment.barberId) }}
+            </div>
           </div>
         </div>
       </div>
