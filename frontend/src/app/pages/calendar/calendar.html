@@ -1,63 +1,58 @@
 <div class="calendar-page">
   <div class="calendar-header">
-    <h1>Calendário de Marcações</h1>
+    <div class="header-top">
+      <h1>Calendário</h1>
+      <button mat-raised-button color="primary" (click)="onCreateAppointment()" [disabled]="!selectedDate && viewMode === 'month'" class="new-appointment-button">
+        <mat-icon>add</mat-icon>
+        Nova Marcação
+      </button>
+    </div>
     
     <div class="calendar-controls">
-      <!-- Linha 1: Filtros -->
-      <div class="filters-row">
-        <mat-form-field appearance="outline" class="filter-select">
-          <mat-label>Barbeiro</mat-label>
-          <mat-select [(value)]="selectedBarber" (selectionChange)="onBarberChange()">
-            <mat-option value="all">Todos os barbeiros</mat-option>
-            <mat-option *ngFor="let barber of barbers" [value]="barber.id">
-              {{ barber.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-select">
+        <mat-label>Barbeiro</mat-label>
+        <mat-select [(value)]="selectedBarber" (selectionChange)="onBarberChange()">
+          <mat-option value="all">Todos os barbeiros</mat-option>
+          <mat-option *ngFor="let barber of barbers" [value]="barber.id">
+            {{ barber.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="filter-select">
-          <mat-label>Estado</mat-label>
-          <mat-select [(value)]="statusFilter" (selectionChange)="onStatusFilterChange()">
-            <mat-option value="all">Todas as marcações</mat-option>
-            <mat-option value="active">Marcações ativas</mat-option>
-            <mat-option value="cancelled">Marcações canceladas</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-select">
+        <mat-label>Estado</mat-label>
+        <mat-select [(value)]="statusFilter" (selectionChange)="onStatusFilterChange()">
+          <mat-option value="all">Todas as marcações</mat-option>
+          <mat-option value="active">Marcações ativas</mat-option>
+          <mat-option value="cancelled">Marcações canceladas</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Botão para alternar entre vistas -->
+      <button mat-raised-button (click)="toggleViewMode()" class="view-toggle-button">
+        <mat-icon>{{ viewMode === 'month' ? 'calendar_view_day' : 'calendar_view_month' }}</mat-icon>
+        {{ viewMode === 'month' ? 'Vista Diária' : 'Vista Mensal' }}
+      </button>
+
+      <!-- Navegação para vista mensal -->
+      <div class="navigation" *ngIf="viewMode === 'month'">
+        <button mat-icon-button (click)="onPreviousMonth()" class="nav-btn">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="nav-date">{{ getMonthYear() }}</span>
+        <button mat-icon-button (click)="onNextMonth()" class="nav-btn">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
       </div>
 
-      <!-- Linha 2: Navegação e Ações -->
-      <div class="actions-row">
-        <!-- Botão para alternar entre vistas -->
-        <button mat-raised-button (click)="toggleViewMode()" class="view-toggle-button">
-          <mat-icon>{{ viewMode === 'month' ? 'calendar_view_day' : 'calendar_view_month' }}</mat-icon>
-          {{ viewMode === 'month' ? 'Vista Diária' : 'Vista Mensal' }}
+      <!-- Navegação para vista diária -->
+      <div class="navigation" *ngIf="viewMode === 'day'">
+        <button mat-icon-button (click)="onPreviousDay()" class="nav-btn">
+          <mat-icon>chevron_left</mat-icon>
         </button>
-
-        <!-- Navegação para vista mensal -->
-        <div class="navigation" *ngIf="viewMode === 'month'">
-          <button mat-icon-button (click)="onPreviousMonth()" class="nav-btn">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-          <h2>{{ getMonthYear() }}</h2>
-          <button mat-icon-button (click)="onNextMonth()" class="nav-btn">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </div>
-
-        <!-- Navegação para vista diária -->
-        <div class="navigation" *ngIf="viewMode === 'day'">
-          <button mat-icon-button (click)="onPreviousDay()" class="nav-btn">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-          <h2>{{ getDayViewDateFormatted() }}</h2>
-          <button mat-icon-button (click)="onNextDay()" class="nav-btn">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </div>
-
-        <button mat-raised-button color="primary" (click)="onCreateAppointment()" [disabled]="!selectedDate && viewMode === 'month'" class="new-appointment-button">
-          <mat-icon>add</mat-icon>
-          Nova Marcação
+        <span class="nav-date">{{ getDayViewDateFormatted() }}</span>
+        <button mat-icon-button (click)="onNextDay()" class="nav-btn">
+          <mat-icon>chevron_right</mat-icon>
         </button>
       </div>
     </div>
@@ -113,8 +108,6 @@
             class="day-appointment"
             *ngFor="let appointment of getAppointmentsForHour(hour)"
             [class]="'status-' + getStatusColor(appointment.status)"
-            [style.top.%]="getAppointmentTopPosition(appointment)"
-            [style.height.%]="getAppointmentHeight(appointment)"
             [title]="appointment.notes || ''"
           >
             <div class="appointment-time-range">

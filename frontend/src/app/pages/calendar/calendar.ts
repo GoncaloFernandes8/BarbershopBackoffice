@@ -412,21 +412,4 @@ export class CalendarComponent implements OnInit {
   getDayViewDateFormatted(): string {
     return format(this.dayViewDate, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   }
-
-  getAppointmentDuration(appointment: Appointment): number {
-    const start = new Date(appointment.startsAt);
-    const end = new Date(appointment.endsAt);
-    return (end.getTime() - start.getTime()) / (1000 * 60); // Duração em minutos
-  }
-
-  getAppointmentTopPosition(appointment: Appointment): number {
-    const start = new Date(appointment.startsAt);
-    const minutes = start.getMinutes();
-    return (minutes / 60) * 100; // Percentagem dentro da hora
-  }
-
-  getAppointmentHeight(appointment: Appointment): number {
-    const duration = this.getAppointmentDuration(appointment);
-    return (duration / 60) * 100; // Percentagem da altura (1 hora = 100%)
-  }
 }

@@ -6,35 +6,29 @@
   margin-bottom: var(--space-6);
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
 .calendar-header h1 {
   color: #e9eef7;
-  margin: 0 0 var(--space-6) 0;
-  font-size: var(--font-size-4xl);
+  margin: 0;
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
 }
 
 .calendar-controls {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.filters-row {
-  display: flex;
   align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.actions-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
 .filter-select {
-  min-width: 220px;
+  min-width: 200px;
 }
 
 /* Estilização do mat-form-field para tema escuro */
@@ -111,20 +105,22 @@
 .navigation {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   background: rgba(195, 255, 90, 0.05);
   border: 1px solid rgba(195, 255, 90, 0.2);
   border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-1) var(--space-2);
 }
 
-.navigation h2 {
+.nav-date {
   margin: 0;
   min-width: 200px;
   text-align: center;
   color: #e9eef7;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .nav-btn {
@@ -629,6 +625,10 @@
   position: relative;
   padding: var(--space-2);
   background: #16181d;
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  align-content: flex-start;
 }
 
 .hour-line {
@@ -641,9 +641,8 @@
 }
 
 .day-appointment {
-  position: absolute;
-  left: var(--space-2);
-  right: var(--space-2);
+  flex: 1;
+  min-width: 250px;
   background: rgba(195, 255, 90, 0.15);
   border: 1px solid rgba(195, 255, 90, 0.3);
   border-left: 4px solid #C3FF5A;
@@ -862,9 +861,9 @@
     font-size: var(--font-size-xs);
   }
 
-  .navigation h2 {
+  .nav-date {
     min-width: 150px;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
   }
 
   .view-toggle-button {
@@ -872,18 +871,12 @@
     padding: var(--space-2) var(--space-3);
   }
 
-  .filters-row {
-    width: 100%;
-  }
-
   .filter-select {
-    flex: 1;
     min-width: 150px;
   }
 
-  .actions-row {
-    width: 100%;
-    justify-content: space-between;
+  .day-appointment {
+    min-width: 200px;
   }
 }
 
@@ -937,9 +930,9 @@
     font-size: var(--font-size-sm);
   }
 
-  .navigation h2 {
+  .nav-date {
     min-width: 100px;
-    font-size: var(--font-size-xs);
+    font-size: 10px;
   }
 
   .timeline-hour {
@@ -947,28 +940,36 @@
     min-height: 60px;
   }
 
-  .filters-row {
+  .calendar-controls {
     flex-direction: column;
-    width: 100%;
+    align-items: stretch;
   }
 
   .filter-select {
     width: 100%;
   }
 
-  .actions-row {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .view-toggle-button,
-  .new-appointment-button {
+  .view-toggle-button {
     width: 100%;
   }
 
   .navigation {
     width: 100%;
     justify-content: center;
+  }
+
+  .header-top {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: stretch;
+  }
+
+  .new-appointment-button {
+    width: 100%;
+  }
+
+  .day-appointment {
+    min-width: 150px;
   }
 
   .hour-label {
@@ -995,4 +996,6 @@
   .appointment-barber {
     font-size: 9px;
   }
+}
+
 }
