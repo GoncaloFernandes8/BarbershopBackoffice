@@ -475,24 +475,27 @@
 }
 
 .notification-delete {
-  position: absolute;
+  position: absolute !important;
   top: var(--space-2);
   right: var(--space-2);
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  background: rgba(42, 48, 66, 0.6);
-  border: 1px solid rgba(58, 65, 87, 0.5);
-  border-radius: var(--radius-md);
-  color: var(--color-text-muted);
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  background: rgba(42, 48, 66, 0.6) !important;
+  border: 1px solid rgba(58, 65, 87, 0.5) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--color-text-muted) !important;
   cursor: pointer;
   transition: all var(--transition-base);
   backdrop-filter: blur(10px);
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transform: scale(0.8);
+  z-index: 10;
+  line-height: 1 !important;
 }
 
 .notification-item:hover .notification-delete {
@@ -501,19 +504,20 @@
 }
 
 .notification-delete:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: var(--color-error);
-  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: var(--color-error) !important;
+  color: var(--color-error) !important;
   box-shadow: 
     0 0 20px rgba(239, 68, 68, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transform: scale(1.1);
+  transform: scale(1.1) !important;
 }
 
 .notification-delete mat-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  line-height: 16px !important;
 }
 
 .no-notifications {
