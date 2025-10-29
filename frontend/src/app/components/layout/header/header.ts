@@ -201,10 +201,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   addCustomer() {
     if (this.isAddingCustomer) return;
     
+    console.log('Iniciando criação de cliente:', this.newCustomer);
     this.isAddingCustomer = true;
     
     this.apiService.createClient(this.newCustomer).subscribe({
       next: (client) => {
+        console.log('Cliente criado com sucesso:', client);
         this.isAddingCustomer = false;
         this.closeAddCustomerModal();
         alert(`Cliente ${client.name} adicionado com sucesso! Um email foi enviado para ${this.newCustomer.email} para definir a senha.`);
@@ -213,9 +215,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.loadNotifications();
       },
       error: (error) => {
-        this.isAddingCustomer = false;
         console.error('Erro ao adicionar cliente:', error);
-        alert('Erro ao adicionar cliente. Tente novamente.');
+        console.error('Detalhes do erro:', error.error);
+        this.isAddingCustomer = false;
+        alert(`Erro ao adicionar cliente: ${error.error?.message || error.message || 'Erro desconhecido'}`);
       }
     });
   }
