@@ -189,7 +189,7 @@ export class ApiService {
   }
 
   // CRUD Clientes
-  createClient(client: { name: string; phone: string; email: string; password: string }): Observable<Client> {
+  createClient(client: { name: string; phone: string; email: string }): Observable<Client> {
     return this.http.post<Client>(`${this.baseUrl}/clients`, client);
   }
 
