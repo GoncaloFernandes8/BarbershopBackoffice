@@ -93,33 +93,36 @@
   <!-- Vista Diária -->
   <div class="day-view-container" *ngIf="viewMode === 'day'">
     <div class="day-view-timeline">
-      <div class="timeline-hour" *ngFor="let hour of dayViewHours">
-        <div class="hour-label">
-          {{ hour }}:00
+      <!-- Grid de horários (slots de 30 minutos) -->
+      <div class="timeline-slot" *ngFor="let slot of dayViewTimeSlots">
+        <div class="slot-label">
+          {{ slot }}
         </div>
-        <div class="hour-content">
-          <div class="hour-line"></div>
-          
-          <!-- Marcações nesta hora -->
-          <div 
-            class="day-appointment"
-            *ngFor="let appointment of getAppointmentsForHour(hour)"
-            [class]="'status-' + getStatusColor(appointment.status)"
-            [title]="appointment.notes || ''"
-          >
-            <div class="appointment-time-range">
-              {{ formatTime(appointment.startsAt) }} - {{ formatTime(appointment.endsAt) }}
-            </div>
-            <div class="appointment-service">
-              {{ getServiceName(appointment.serviceId) }}
-            </div>
-            <div class="appointment-client">
-              {{ getClientName(appointment.clientId) }}
-            </div>
-            <div class="appointment-barber" *ngIf="selectedBarber === 'all'">
-              <mat-icon>person</mat-icon>
-              {{ getBarberName(appointment.barberId) }}
-            </div>
+        <div class="slot-line"></div>
+      </div>
+
+      <!-- Container para marcações com posicionamento absoluto -->
+      <div class="appointments-container">
+        <div 
+          class="day-appointment"
+          *ngFor="let appointment of getAllAppointmentsForDay()"
+          [class]="'status-' + getStatusColor(appointment.status)"
+          [style.top.px]="getAppointmentTopPosition(appointment)"
+          [style.height.px]="getAppointmentHeight(appointment)"
+          [title]="appointment.notes || ''"
+        >
+          <div class="appointment-time-range">
+            {{ formatTime(appointment.startsAt) }} - {{ formatTime(appointment.endsAt) }}
+          </div>
+          <div class="appointment-service">
+            {{ getServiceName(appointment.serviceId) }}
+          </div>
+          <div class="appointment-client">
+            {{ getClientName(appointment.clientId) }}
+          </div>
+          <div class="appointment-barber" *ngIf="selectedBarber === 'all'">
+            <mat-icon>person</mat-icon>
+            {{ getBarberName(appointment.barberId) }}
           </div>
         </div>
       </div>

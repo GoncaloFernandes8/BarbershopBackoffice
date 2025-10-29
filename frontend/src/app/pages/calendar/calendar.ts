@@ -50,6 +50,7 @@ export class CalendarComponent implements OnInit {
   // Propriedades para a vista diária
   dayViewDate: Date = new Date();
   dayViewHours: number[] = Array.from({ length: 13 }, (_, i) => i + 8); // 8h às 20h
+  dayViewTimeSlots: string[] = this.generateTimeSlots(); // 8:00, 8:30, 9:00, etc.
 
   constructor(
     private apiService: ApiService,
@@ -411,5 +412,50 @@ export class CalendarComponent implements OnInit {
 
   getDayViewDateFormatted(): string {
     return format(this.dayViewDate, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+  }
+
+  generateTimeSlots(): string[] {
+    const slots: string[] = [];
+    for (let hour = 8; hour <= 20; hour++) {
+      slots.push(`${hour}:00`);
+      if (hour < 20) {
+        slots.push(`${hour}:30`);
+      }
+    }
+    return slots;
+  }
+
+  getAllAppointmentsForDay(): Appointment[] {
+    return this.filteredAppointments;
+  }
+
+  getAppointmentTopPosition(appointment: Appointment): number {
+    const startTime = new Date(appointment.startsAt);
+    const hours = startTime.getHours();
+    const minutes = startTime.getMinutes();
+    
+    // Calcular minutos desde as 8h
+    const minutesSince8am = (hours - 8) * 60 + minutes;
+    
+    // Cada slot de 30min tem 80px de altura
+    // Então 1 minuto = 80/30 = 2.666... pixels
+    const pixelsPerMinute = 80 / 30;
+    
+    return minutesSince8am * pixelsPerMinute;
+  }
+
+  getAppointmentHeight(appointment: Appointment): number {
+    const startTime = new Date(appointment.startsAt);
+    const endTime = new Date(appointment.endsAt);
+    
+    // Calcular duração em minutos
+    const durationMinutes = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
+    
+    // Cada slot de 30min tem 80px de altura
+    // Então 1 minuto = 80/30 = 2.666... pixels
+    const pixelsPerMinute = 80 / 30;
+    
+    // Altura mínima de 20px para marcações muito curtas
+    return Math.max(20, durationMinutes * pixelsPerMinute);
   }
 }

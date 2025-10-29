@@ -531,170 +531,152 @@
   height: 16px;
 }
 
-/* Vista Diária */
+/* Vista Diária - Estilo Google Calendar */
 .day-view-container {
-  background: linear-gradient(135deg, #16181d 0%, #1a1d27 100%);
+  background: #16181d;
   border: 1px solid #2a3042;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
-  padding: var(--space-4);
+  overflow: auto;
+  max-height: calc(100vh - 250px);
 }
 
 .day-view-timeline {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  min-height: 1040px; /* 13 horas * 80px */
 }
 
-.timeline-hour {
+/* Slots de 30 minutos - Estilo Google Calendar */
+.timeline-slot {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  min-height: 80px;
-  border-bottom: 1px solid #2a3042;
+  grid-template-columns: 70px 1fr;
+  height: 80px;
   position: relative;
 }
 
-.timeline-hour:last-child {
-  border-bottom: none;
+.timeline-slot:last-child .slot-line {
+  border-bottom: 1px solid #2a3042;
 }
 
-.hour-label {
-  padding: var(--space-2);
-  font-weight: var(--font-weight-semibold);
-  color: #cbd4e6;
-  font-size: var(--font-size-sm);
+.slot-label {
+  padding: var(--space-1) var(--space-2);
+  font-weight: var(--font-weight-normal);
+  color: #9ca3af;
+  font-size: 12px;
   display: flex;
   align-items: flex-start;
-  justify-content: center;
-  background: rgba(195, 255, 90, 0.05);
-  border-right: 2px solid #2a3042;
-}
-
-.hour-content {
+  justify-content: flex-end;
+  background: transparent;
   position: relative;
-  padding: var(--space-2);
-  background: #16181d;
-  display: flex;
-  gap: var(--space-1);
-  flex-wrap: wrap;
-  align-content: flex-start;
+  top: -8px;
 }
 
-.hour-line {
+.slot-line {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 70px;
   right: 0;
-  height: 1px;
-  background: rgba(195, 255, 90, 0.1);
+  height: 100%;
+  border-top: 1px solid #2a3042;
+  background: transparent;
 }
 
+/* Container para marcações com posicionamento absoluto */
+.appointments-container {
+  position: absolute;
+  top: 0;
+  left: 70px;
+  right: 0;
+  bottom: 0;
+  padding: 0 8px;
+  pointer-events: none;
+}
+
+/* Marcações com posicionamento absoluto preciso - Estilo Google Calendar */
 .day-appointment {
-  flex: 1;
-  min-width: 250px;
-  background: rgba(195, 255, 90, 0.15);
-  border: 1px solid rgba(195, 255, 90, 0.3);
-  border-left: 4px solid #C3FF5A;
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  background: rgba(195, 255, 90, 0.9);
+  border: none;
+  border-left: 4px solid #a8e04a;
+  border-radius: 4px;
+  padding: 8px;
   cursor: pointer;
-  transition: all var(--transition-base);
-  box-shadow: 0 2px 8px rgba(195, 255, 90, 0.15);
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  z-index: 1;
+  z-index: 10;
+  pointer-events: all;
 }
 
 .day-appointment:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(195, 255, 90, 0.25);
-  background: rgba(195, 255, 90, 0.25);
-  z-index: 2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  z-index: 20;
+  transform: scale(1.02);
 }
 
-/* Status-specific day appointments */
+/* Status-specific day appointments - Estilo Google Calendar */
 .day-appointment.status-primary {
-  background: rgba(33, 150, 243, 0.15);
-  border-color: rgba(33, 150, 243, 0.3);
-  border-left-color: #2196f3;
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
-}
-
-.day-appointment.status-primary:hover {
-  background: rgba(33, 150, 243, 0.25);
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
+  background: rgba(66, 133, 244, 0.9);
+  border-left-color: #1967d2;
+  color: #fff;
 }
 
 .day-appointment.status-accent {
-  background: rgba(255, 152, 0, 0.15);
-  border-color: rgba(255, 152, 0, 0.3);
-  border-left-color: #ff9800;
-  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
-}
-
-.day-appointment.status-accent:hover {
-  background: rgba(255, 152, 0, 0.25);
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25);
+  background: rgba(251, 188, 4, 0.9);
+  border-left-color: #f9ab00;
+  color: #000;
 }
 
 .day-appointment.status-warn {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.3);
-  border-left-color: #ef4444;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
-}
-
-.day-appointment.status-warn:hover {
-  background: rgba(239, 68, 68, 0.25);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  background: rgba(234, 67, 53, 0.9);
+  border-left-color: #c5221f;
+  color: #fff;
 }
 
 .day-appointment.status-success {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.3);
-  border-left-color: #10b981;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
-}
-
-.day-appointment.status-success:hover {
-  background: rgba(16, 185, 129, 0.25);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  background: rgba(52, 168, 83, 0.9);
+  border-left-color: #188038;
+  color: #fff;
 }
 
 .appointment-time-range {
-  font-weight: var(--font-weight-bold);
-  color: #C3FF5A;
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--space-1);
+  font-weight: 500;
+  font-size: 11px;
+  margin-bottom: 2px;
+  opacity: 0.9;
 }
 
 .appointment-service {
-  font-weight: var(--font-weight-semibold);
-  color: #e9eef7;
-  font-size: var(--font-size-base);
-  margin-bottom: var(--space-1);
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 2px;
+  line-height: 1.3;
 }
 
 .appointment-client {
-  font-size: var(--font-size-sm);
-  color: #cbd4e6;
-  margin-bottom: var(--space-1);
+  font-size: 11px;
+  margin-bottom: 2px;
+  opacity: 0.85;
+  line-height: 1.3;
 }
 
 .appointment-barber {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  font-size: var(--font-size-xs);
-  color: #a0a7b4;
-  margin-top: var(--space-1);
+  gap: 4px;
+  font-size: 10px;
+  margin-top: 2px;
+  opacity: 0.8;
 }
 
 .appointment-barber mat-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-  color: #C3FF5A;
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
 }
 
 /* Responsive */
@@ -716,33 +698,40 @@
     min-height: 100px;
   }
 
-  .day-view-container {
-    padding: var(--space-2);
-  }
-
-  .timeline-hour {
+  .timeline-slot {
     grid-template-columns: 60px 1fr;
-    min-height: 70px;
+    height: 70px;
   }
 
-  .hour-label {
-    font-size: var(--font-size-xs);
+  .slot-label {
+    font-size: 11px;
+  }
+
+  .appointments-container {
+    left: 60px;
+    padding: 0 6px;
+  }
+
+  .slot-line {
+    left: 60px;
   }
 
   .day-appointment {
-    padding: var(--space-2);
+    left: 6px;
+    right: 6px;
+    padding: 6px;
   }
 
   .appointment-time-range {
-    font-size: var(--font-size-xs);
+    font-size: 10px;
   }
 
   .appointment-service {
-    font-size: var(--font-size-sm);
+    font-size: 12px;
   }
 
   .appointment-client {
-    font-size: var(--font-size-xs);
+    font-size: 10px;
   }
 }
 
@@ -880,9 +869,28 @@
     font-size: 11px;
   }
 
-  .timeline-hour {
+  .timeline-slot {
     grid-template-columns: 50px 1fr;
-    min-height: 60px;
+    height: 60px;
+  }
+
+  .slot-label {
+    font-size: 10px;
+  }
+
+  .appointments-container {
+    left: 50px;
+    padding: 0 4px;
+  }
+
+  .slot-line {
+    left: 50px;
+  }
+
+  .day-appointment {
+    left: 4px;
+    right: 4px;
+    padding: 4px;
   }
 
   .calendar-controls {
@@ -913,31 +921,19 @@
     min-width: 150px;
   }
 
-  .hour-label {
-    font-size: 10px;
-    padding: var(--space-1);
-  }
-
-  .day-appointment {
-    padding: var(--space-1);
-  }
-
   .appointment-time-range {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .appointment-service {
-    font-size: var(--font-size-xs);
+    font-size: 11px;
   }
 
   .appointment-client {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .appointment-barber {
-    font-size: 9px;
+    font-size: 8px;
   }
 }
-
-}
-
