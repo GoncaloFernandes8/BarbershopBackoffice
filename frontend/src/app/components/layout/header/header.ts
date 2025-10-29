@@ -198,34 +198,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isAddingCustomer = false;
   }
 
-  async addCustomer() {
+  addCustomer() {
     if (this.isAddingCustomer) return;
     
     this.isAddingCustomer = true;
     
-    try {
-      // Simular chamada para API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Aqui seria a chamada real para a API
-      console.log('Adicionando cliente:', this.newCustomer);
-      
-      // Simular envio de email
-      console.log('Enviando email para definir password para:', this.newCustomer.email);
-      
-      // Notificação será criada no backend
-      
-      // Fechar modal e mostrar sucesso
-      this.closeAddCustomerModal();
-      
-      // Aqui poderia mostrar uma notificação de sucesso
-      alert(`Cliente ${this.newCustomer.name} adicionado com sucesso! Um email foi enviado para ${this.newCustomer.email} para definir a password.`);
-      
-    } catch (error) {
-      console.error('Erro ao adicionar cliente:', error);
-      alert('Erro ao adicionar cliente. Tente novamente.');
-    } finally {
-      this.isAddingCustomer = false;
-    }
+    this.apiService.createClient(this.newCustomer).subscribe({
+      next: (client) => {
+        this.isAddingCustomer = false;
+        this.closeAddCustomerModal();
+        alert(`Cliente ${client.name} adicionado com sucesso! Um email foi enviado para ${this.newCustomer.email} para definir a senha.`);
+        
+        // Recarregar notificações para mostrar a nova notificação
+        this.loadNotifications();
+      },
+      error: (error) => {
+        this.isAddingCustomer = false;
+        console.error('Erro ao adicionar cliente:', error);
+        alert('Erro ao adicionar cliente. Tente novamente.');
+      }
+    });
   }
 }
